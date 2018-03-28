@@ -51,10 +51,10 @@
 
 @keyframes blinker {
     50% {
-        opacity: 0;
+        opacity: 0.3;
     }
 }
 
 [data-win]:after {
-    animation: blinker 2s linear infinite;
+    animation: blinker 2s ease-in-out infinite;
 }
