@@ -58,3 +58,19 @@
 [data-win]:after {
     animation: blinker 2s ease-in-out infinite;
 }
+
+#hint{
+    margin:auto;
+    text-align:center;
+    font-size:3em;
+}
+
+#reload {
+    display: block;
+    margin: 10px auto;
+    text-align: center;
+    font-size: 3em;
+    border: 3px solid rgba(221, 201, 255, 0.8);
+    border-radius: 3px;
+    background-color: rgba(115, 193, 248, 0.8);
+}

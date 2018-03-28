@@ -1,6 +1,10 @@
 let playground;
 let nodes;
 
+function hint(text) {
+    document.getElementById('hint').innerText = text;
+}
+
 function init() {
     nodes = document.querySelectorAll('#playground > div')
     playground = document.getElementById('playground')
@@ -28,8 +32,7 @@ let player_round = ((function* player_round() {
 
 function clicknode(node) {
     if (node.dataset.holder) {
-        //alert('already used')
-        console.error('already used')
+        hint('already used')
         return;
     }
     node.dataset.holder = playground.dataset.player
@@ -58,7 +61,9 @@ function all(arr, predict) {
 function try_finish() {
     for (let player of players) for (let test of win_test) {
         if (all(test, i => nodes[i].dataset.holder == player)) {
-            console.log(`${player} wins`)
+            //finish
+            clicknode = () => hint(`already finish (${player} wins)`)
+            hint(`${player} wins`)
             for (id of test)
                 nodes[id].dataset.win = ''
             return true
@@ -66,4 +71,3 @@ function try_finish() {
     }
     return false
 }
-
