@@ -6,27 +6,21 @@ function hint(text) {
 }
 
 function init() {
-    nodes = document.querySelectorAll('#playground > div')
     playground = document.getElementById('playground')
-    playground.dataset.player = player_round.next().value
+    nodes = [...playground.querySelectorAll('div')]
+    player_round.next()
 
-    for (let y = 0; y < 3; ++y) {
-        for (let x = 0; x < 3; ++x) {
-            let node = nodes[y * 3 + x]
-            node.dataset.x = x
-            node.dataset.y = y
-            node.addEventListener('click', () => clicknode(node))
-        }
-    }
+    for (let node of nodes)
+        node.addEventListener('click', () => clicknode(node))//yes, I know I can use *this*
 }
 
 let players = ['o', 'x']
 let player_round = ((function* player_round() {
     while (true) {
-        playground.dataset.player = 'o'
-        yield 'o'
-        playground.dataset.player = 'x'
-        yield 'x'
+        for (let player of players) {
+            playground.dataset.player = player
+            yield player
+        }
     }
 })())
 
@@ -44,9 +38,11 @@ let win_test = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
+
     [0, 3, 6],
     [1, 4, 7],
     [2, 5, 8],
+
     [0, 4, 8],
     [2, 4, 6]
 ]
@@ -59,9 +55,10 @@ function all(arr, predict) {
 }
 
 function try_finish() {
+
+    // someone win ?
     for (let player of players) for (let test of win_test) {
         if (all(test, i => nodes[i].dataset.holder == player)) {
-            //finish
             clicknode = () => hint(`already finish (${player} wins)`)
             hint(`${player} wins`)
             for (id of test)
@@ -69,5 +66,14 @@ function try_finish() {
             return true
         }
     }
+
+    // draw ? (full only)
+    if (all(nodes, n => n.dataset.holder)) {
+        clicknode = () => hint(`already finish (draw)`)
+        hint('draw')
+        return true
+    }
+
+    // continue
     return false
 }
