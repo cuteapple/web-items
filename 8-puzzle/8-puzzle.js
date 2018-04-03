@@ -12,7 +12,7 @@ function init() {
     grids = [...playground.children]
 
     /// tiles
-    for (let i = 0; i <= 9; ++i) {
+    for (let i = 0; i < 9; ++i) {
         let tile = document.createElement('img')
         tile.className = 'tile'
         tile.src = `img/${i}.png`
@@ -52,5 +52,7 @@ function keydown() {
 }
 
 function try_finish() {
+    let finish = tiles.every(x => x.dataset.n == x.parentElement.dataset.n)
+    return finish
     "TODO: check order(?) or each block check itself(?) custom element "
 }
