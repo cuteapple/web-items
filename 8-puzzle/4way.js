@@ -34,3 +34,54 @@ class controller4 {
     }
 }
 
+class controller4_touch {
+    constructor() {
+        document.addEventListener('touchstart', (ev) => this.start(ev));
+        document.addEventListener('touchmove', (ev) => this.move(ev));
+        document.addEventListener('touchend', (ev) => this.end(ev));
+        this.p = undefined;
+    }
+
+    getp(ev) {
+        return [evt.touches[0].clientX, evt.touches[0].clientY]
+    }
+
+    start(ev) {
+        this.p = getp(ev)
+    }
+
+    end(ev) {
+        this.p = undefined
+    }
+
+    move(ev) {
+        if (!this.p) {
+            return;
+        }
+
+        let [x, y] = getp(ev)
+        let [ox, oy] = this.p
+        let [dx, dy] = [x - ox, y - oy]
+
+        let rad = Math.atan2(dy, dx)
+        let deg = red * 180 / Math.PI
+
+        if(deg > 0)
+
+        if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
+            if (xDiff > 0) {
+                /* left swipe */
+            } else {
+                /* right swipe */
+            }
+        } else {
+            if (yDiff > 0) {
+                /* up swipe */
+            } else {
+                /* down swipe */
+            }
+        }
+        /* reset values */
+        xDown = null;
+        yDown = null;
+    };
