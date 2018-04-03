@@ -94,7 +94,7 @@ function move(direction) {
     cursor = target
 
     if (test_finish()) {
-        hint('✅')
+        hint('🏁')
     }
     else {
         hint('8-puzzle')
