@@ -2,7 +2,7 @@ class controller4 {
     constructor() {
         document.addEventListener('keydown', (ev) => this.handlekey(ev.key))
         // may update some day
-        this.left = this.right = this.up = this.down = this.all = () => { console.log('no handler') }
+        this.left = this.right = this.up = this.down = this.all = () => {/* console.log('no handler')*/ }
     }
 
     // may update some day
@@ -22,6 +22,15 @@ class controller4 {
         }
         this[handler](handler)
         this.all(handler)
+    }
+
+    static to2D(direction, [right, up] = [1, 1]) {
+        switch (direction) {
+            case 'left': return [-right, 0]
+            case 'right': return [right, 0]
+            case 'up': return [0, up]
+            case 'down': return [0, -up]
+        }
     }
 }
 

@@ -2,12 +2,18 @@ let playground;
 let grids;
 let tiles;
 let links;
+let cursor;
 let controller = new controller4()
 
 function hint(text) {
     document.getElementById('hint').innerText = text;
 }
 
+let grid_utils = {
+    flatten: ([x, y]) => x + y * 3,
+    inbound: ([x, y]) => x >= 0 && x < 3 && y >= 0 && y < 3,
+    xy: index => [index % 3, Math.floor(index / 3)]
+}
 function init() {
     playground = document.getElementById('playground')
 
@@ -22,13 +28,10 @@ function init() {
     }
     tiles[0].classList.add('cursor')
 
-    
-
     //links
     links = []
-    flatten = ([x, y]) => x + y * 3
-    inbound = ([x, y]) => x >= 0 && x < 3 && y >= 0 && y < 3
 
+    let { inbound, flatten } = grid_utils
     for (let x = 0; x < 3; ++x)
         for (let y = 0; y < 3; ++y) {
             candidate = [
@@ -52,20 +55,38 @@ function init() {
         pos = next_pos
     }
 
+    cursor = pos
+
     ///grids
     grids = [...playground.children]
     for (let i = 0; i < 9; ++i) {
         grids[i].dataset.n = i;
         grids[i].appendChild(tiles[replace[i]])
     }
+
+    //install handler
+    controller.all = move;
 }
 
-function clicknode(node) {
-    "TODO: try move"
+function swapTile(a, b) {
+    pa = a.parentElement
+    pb = b.parentElement
+    pa.appendChild(b)
+    pb.appendChild(a)
 }
 
-function keydown() {
-    "TODO: try move"
+function move(direction) {
+    let [dx, dy] = controller4.to2D(direction, [1, -1])
+    let pos = grid_utils.xy(cursor)
+    pos[0] += dx
+    pos[1] += dy
+
+    if (!grid_utils.inbound(pos))
+        return
+    let target = grid_utils.flatten(pos)
+    swapTile(grids[cursor].firstChild, grids[target].firstChild)
+    cursor = target
+    try_finish()
 }
 
 function try_finish() {
