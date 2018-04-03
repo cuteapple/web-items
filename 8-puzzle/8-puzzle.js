@@ -1,9 +1,10 @@
-let playground;
-let grids;
-let tiles;
-let links;
-let cursor;
+﻿let playground
+let grids
+let tiles
+let links
+let cursor = 0
 let controller = new controller4()
+let shuffle_times = 1000
 
 function hint(text) {
     document.getElementById('hint').innerText = text;
@@ -17,6 +18,7 @@ let grid_utils = {
 function init() {
     playground = document.getElementById('playground')
 
+
     /// tiles
     tiles = []
     for (let i = 0; i < 9; ++i) {
@@ -27,6 +29,7 @@ function init() {
         tiles.push(tile)
     }
     tiles[0].classList.add('cursor')
+
 
     //links
     links = []
@@ -46,16 +49,17 @@ function init() {
 
     let randomSelect = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
+
     //shuffle
     let replace = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-    let pos = 0
-    for (let i = 0; i < 1000; ++i) {
+    let pos = cursor
+    for (let i = 0; i < shuffle_times; ++i) {
         let next_pos = randomSelect(links[pos]);
         [replace[pos], replace[next_pos]] = [replace[next_pos], replace[pos]]
         pos = next_pos
     }
-
     cursor = pos
+
 
     ///grids
     grids = [...playground.children]
@@ -81,15 +85,22 @@ function move(direction) {
     pos[0] += dx
     pos[1] += dy
 
-    if (!grid_utils.inbound(pos))
+    if (!grid_utils.inbound(pos)) {
+        hint('❌')
         return
+    }
     let target = grid_utils.flatten(pos)
     swapTile(grids[cursor].firstChild, grids[target].firstChild)
     cursor = target
-    try_finish()
+
+    if (test_finish()) {
+        hint('✅')
+    }
+    else {
+        hint('8-puzzle')
+    }
 }
 
-function try_finish() {
-    let finish = tiles.every(x => x.dataset.n == x.parentElement.dataset.n)
-    return finish
+function test_finish() {
+    return tiles.every(x => x.dataset.n == x.parentElement.dataset.n)
 }
