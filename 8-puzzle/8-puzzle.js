@@ -1,5 +1,7 @@
 let playground;
-let nodes;
+let grids;
+let tiles = [];
+let link = [];
 
 function hint(text) {
     document.getElementById('hint').innerText = text;
@@ -7,7 +9,22 @@ function hint(text) {
 
 function init() {
     playground = document.getElementById('playground')
-    nodes = [...playground.querySelectorAll('div')]
+    grids = [...playground.children]
+
+    /// tiles
+    for (let i = 0; i <= 9; ++i) {
+        let tile = document.createElement('img')
+        tile.className = 'tile'
+        tile.src = `img/${i}.png`
+        tile.dataset.n = i;
+        tiles.push(tile)
+    }
+
+    ///grids
+    for (let i = 0; i < 9; ++i) {
+        grids[i].dataset.n = i;
+        grids[i].appendChild(tiles[i])
+    }
 
     "TODO: init nodes"
 }
