@@ -19,6 +19,7 @@ function init() {
         tile.dataset.n = i;
         tiles.push(tile)
     }
+    tiles[0].classList.add('cursor')
 
     ///grids
     for (let i = 0; i < 9; ++i) {
@@ -26,7 +27,20 @@ function init() {
         grids[i].appendChild(tiles[i])
     }
 
-    "TODO: init nodes"
+    //links
+    flatten = ([x, y]) => x + y * 3
+    inbound = ([x, y]) => x >= 0 && x < 3 && y >= 0 && y < 3
+
+    for (let x = 0; x < 3; ++x)
+        for (let y = 0; y < 3; ++y) {
+            candidate = [
+                [x - 1, y],
+                [x + 1, y],
+                [x, y + 1],
+                [x, y - 1]
+            ]
+            link[flatten([x, y])] = candidate.filter(inbound).map(flatten)
+        }
 }
 
 function clicknode(node) {
