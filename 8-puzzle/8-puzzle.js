@@ -54,5 +54,4 @@ function keydown() {
 function try_finish() {
     let finish = tiles.every(x => x.dataset.n == x.parentElement.dataset.n)
     return finish
-    "TODO: check order(?) or each block check itself(?) custom element "
 }
