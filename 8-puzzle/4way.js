@@ -34,12 +34,17 @@ class controller4 {
     }
 }
 
+///
+/// !! not tested
+///
+
 class controller4_touch {
     constructor() {
         document.addEventListener('touchstart', (ev) => this.start(ev));
         document.addEventListener('touchmove', (ev) => this.move(ev));
         document.addEventListener('touchend', (ev) => this.end(ev));
         this.p = undefined;
+        this.all = () => { }
     }
 
     getp(ev) {
@@ -63,25 +68,23 @@ class controller4_touch {
         let [ox, oy] = this.p
         let [dx, dy] = [x - ox, y - oy]
 
-        let rad = Math.atan2(dy, dx)
-        let deg = red * 180 / Math.PI
+        //let rad = Math.atan2(dy, dx)
+        //let deg = red * 180 / Math.PI
 
-        if(deg > 0)
-
-        if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
-            if (xDiff > 0) {
-                /* left swipe */
+        if (Math.abs(dx) > Math.abs(dy)) {/*most significant*/
+            if (dx > 0) {
+                handler = 'right'
             } else {
-                /* right swipe */
+                handler = 'left'
             }
         } else {
             if (yDiff > 0) {
-                /* up swipe */
+                handler = 'up'
             } else {
-                /* down swipe */
+                handler = 'down'
             }
         }
-        /* reset values */
-        xDown = null;
-        yDown = null;
-    };
+        this.all(handler);
+        this.end()
+    }
+}
