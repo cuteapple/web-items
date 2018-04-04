@@ -56,12 +56,13 @@ function all(arr, predict) {
 
 function try_finish() {
 
+    let win_nodes = []
     // someone win ?
     for (let player of players) for (let test of win_test) {
         if (all(test, i => nodes[i].dataset.holder == player)) {
             clicknode = () => hint(`already finish (${player} wins)`)
             hint(`${player} wins`)
-            for (id of test)
+            for (let id of test)
                 nodes[id].dataset.win = ''
             return true
         }
