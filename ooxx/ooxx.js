@@ -68,7 +68,7 @@ function try_finish() {
         }
     }
 
-    // draw ? (full only)
+    // draw ? (full only, no predication)
     if (all(nodes, n => n.dataset.holder)) {
         clicknode = () => hint(`already finish (draw)`)
         hint('draw')

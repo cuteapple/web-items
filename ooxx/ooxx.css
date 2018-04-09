@@ -2,24 +2,15 @@
     box-sizing: border-box
 }
 
-/* I would like to have min(80vw,80vh)*/
-@media (min-aspect-ratio: 1/1) {
-    #playground {
-        width: 80vh;
-        height: 80vh;
-    }
-}
 
-@media (max-aspect-ratio: 1/1) {
-    #playground {
-        width: 80vw;
-        height: 80vw;
-    }
-}
-
-#playground {
-    display: grid;
+#playground { /* self */
+    width: 80vmin;
+    height: 80vmin;
     margin: auto;
+}
+
+#playground {/* grid */
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     grid-gap: 2px;
