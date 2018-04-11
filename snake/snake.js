@@ -3,46 +3,61 @@ let body = []
 let food
 let controller = new controller4()
 let velocity = [1, 0]
-let x = 1
-let y = 1
+
+class SnakeBody {
+    constructor(x, y, head = false) {
+        this.element = document.createElement('div')
+        this.element.className = "snake"
+        if (head) this.element.classList.add("head")
+        playground.appendChild(this.element)
+
+        this.head = head
+        this.x = x
+        this.y = y
+    }
+
+    set x(value) { this.element.style.gridColumn = this._x = value; }
+    get x() { return this._x; }
+    set y(value) { this.element.style.gridRow = this._y = value; }
+    get y() { return this._y; }
+    set pos(p) { this.x = p[0]; this.y = p[1]; }
+    get pos() { return [this.x, this.y] }
+}
 
 function hint(text) {
     document.getElementById('hint').innerText = text;
 }
 
-let grid_utils = {
-    flatten: ([x, y]) => x + y * 3,
-    inbound: ([x, y]) => x >= 0 && x < 3 && y >= 0 && y < 3,
-    xy: index => [index % 3, Math.floor(index / 3)]
-}
-
 function init() {
     playground = document.getElementById('playground')
-    body = [...playground.children]
+    body = [new SnakeBody(10, 10, true), new SnakeBody(9, 10)]
 
     //install handler
     controller.all = move;
 }
 
-function swapTile(a, b) {
-    pa = a.parentElement
-    pb = b.parentElement
-    pa.appendChild(b)
-    pb.appendChild(a)
+function end(message="end") {
+    controller.all = () => { }
+    hint(message)
 }
 
 function move(direction) {
     let [dx, dy] = controller4.to2D(direction, [1, -1])
-
-    for (let i = 0; i < body.length - 1; ++i) {
-        body[i + 1].style.gridColumn = body[i].style.gridColumn
-        body[i + 1].style.gridRow = body[i].style.gridRow
-    }
-
+    let [x, y] = body[0].pos
     x += dx
     y += dy
-    body[0].style.gridColumn = x
-    body[0].style.gridRow = y
+
+    let status;
+    if (x <= 0 || x > 50 || y <= 0 || y > 50) { end(); return; }
+
+
+
+    for (let i = 0; i < body.length - 1; ++i) {
+        body[i + 1].pos = body[i].pos
+    }
+
+    body[0].x += dx;
+    body[0].y += dy;
 
     return
 
