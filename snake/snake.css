@@ -28,6 +28,9 @@
         background-color: red;
     }
 
+.food {
+    background-color: orange;
+}
 #hint {
     margin: auto;
     text-align: center;

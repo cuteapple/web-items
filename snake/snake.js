@@ -1,12 +1,12 @@
 ﻿let playground
 let body = []
-let food
+let foods = []
 let controller = new controller4()
 let velocity = [1, 0]
 
 function init() {
     playground = document.getElementById('playground')
-    body = [new SnakeBody(10, 10, true), new SnakeBody(9, 10), new SnakeBody(8, 10)] // playground.children
+    body = [new SnakeBody(10, 10, true), new SnakeBody(9, 10), new SnakeBody(8, 10),new Food(7,10)] // playground.children
     controller.all = movekey_handler;
 }
 
@@ -57,6 +57,10 @@ class SnakeBody extends PlaygroundItem{
 }
 
 class Food extends PlaygroundItem {
+    constructor(x, y) {
+        super(x, y)
+        this.element.classList.add("food")
+    }
     moveToEmpty() {
         //...
         items = [food,...body]
