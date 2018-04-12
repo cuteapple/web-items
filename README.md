@@ -12,5 +12,5 @@ something
 
 ---
 
-- 8-puzzle https://cuteapple.github.io/web-items/snake/
+- snake https://cuteapple.github.io/web-items/snake/
 <img src="snake/cover.PNG" width="256">
