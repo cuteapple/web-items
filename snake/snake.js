@@ -7,7 +7,7 @@ let width = 4
 let height = 4
 
 let playground_util = {
-    in: (x, y) => x >= 0 && x < width && y >= 0 && y < height,
+    in: (x, y) => x >= 0 && x < width && y >= 0 && y < height
 }
 
 function init() {
@@ -28,7 +28,11 @@ function move(dx, dy) {
 
     //wall
     if (!playground_util.in(x, y)) { end('❌'); return; }
-
+    let eat_food = foods.find(food => food.x == x && food.y == y)
+    if (eat_food) {
+        eat_food.pos = randomEmptyGrid()
+        body.push(new SnakeBody(0,0))
+    }
     //food
     //if (food) { }
 
