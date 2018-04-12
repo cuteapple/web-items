@@ -72,7 +72,10 @@ class Food extends PlaygroundItem {
 }
 
 function randomEmptyGrid() {
-    let map = Array(width).fill([])
+    let map = []
+    for (let x = 0; x < width; ++x) {
+        map[x] = []
+    }
 
     for (let s of body) {
         let [x, y] = s.pos
