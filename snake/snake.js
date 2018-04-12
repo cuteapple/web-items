@@ -6,31 +6,37 @@ let velocity = [1, 0]
 let width = 10
 let height = 10
 
-let auto = true;
-let auto_int = 100;
-let auto_timer;
-
+let automove = {
+    enabled: () => !!automove.timer,
+    interval: 100,
+    timer: undefined,
+    start: function start() {
+        if (automove.timer) return;
+        automove.timer = setInterval(() => move(...velocity), automove.interval)
+    },
+    stop: function stop() {
+        if (!automove.timer) return;
+        clearInterval(automove.timer)
+        automove.timer = undefined
+    }
+}
 let playground_util = {
     in: (x, y) => x >= 0 && x < width && y >= 0 && y < height
 }
 
 function init() {
-    document.getElementById('menu').style.display = 'none';
     playground = document.getElementById('playground')
     playground.style.gridTemplateColumns = `repeat(${width},1fr)`;
     playground.style.gridTemplateRows = `repeat(${height},1fr)`;
     body = [new SnakeBody(1, 0, true), new SnakeBody(0, 0), new SnakeBody(0, 1), new SnakeBody(0, 2)]
     foods = [new Food(...randomEmptyGrid())]
     controller.all = movekey_handler;
-    if (auto) auto_timer = setInterval(() => move(...velocity), auto_int)
 }
 
 function move(dx, dy) {
     let [x, y] = body[0].pos
     x += dx
     y += dy
-
-    let status;
 
     //wall
     if (!playground_util.in(x, y)) { body[0].blink(); end('😵'); return; }
@@ -49,6 +55,7 @@ function move(dx, dy) {
         body.push(new SnakeBody(0, 0))//pos not relevent
     }
 
+    //move
     for (let i = body.length - 1; i > 0; --i) {
         body[i].pos = body[i - 1].pos
     }
@@ -141,7 +148,7 @@ function hint(text) {
 
 function end(message = "end") {
     controller.all = () => { }
-    clearInterval(auto_timer)
+    automove.stop()
     hint(message)
 }
 
@@ -152,5 +159,23 @@ function movekey_handler(direction) {
         if (v[0] == -ov[0] && v[1] == -ov[1]) return;//invalid move
     }
     velocity = v;
-    if (!auto) move(...velocity)
+    if (!automove.enabled()) move(...velocity)
+}
+
+
+///
+/// UI
+///
+
+function initUI() {
+    document.getElementById('speed').innerText = automove.enabled() ?  '🛌': '⏲️';
+}
+
+function changeSpeed(element) {
+    //element.parentElement.removeChild(element)
+    switch (element.innerText) {
+        case '⏲️': automove.start(); element.innerText = '🛌'; break;
+        case '🛌': automove.stop(); element.innerText = '⏲️'; break;
+        default: throw "not valid speed request";
+    }
 }

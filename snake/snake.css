@@ -47,15 +47,7 @@
     font-size: 3em;
 }
 
-#reload {
-    display: block;
-    margin: 10px auto;
-    text-align: center;
-    font-size: 3em;
-    border: 3px solid rgba(221, 201, 255, 0.8);
-    border-radius: 3px;
-    background-color: rgba(115, 193, 248, 0.8);
-}
+
 
 #menu-full {
     width: 100%;
@@ -70,4 +62,27 @@
 #menu {
     display: block;
     margin: auto;
+}
+
+button {
+    display: inline-block;
+    margin: 10px auto;
+    text-align: center;
+    font-size: 3em;
+    border: 3px solid rgba(221, 201, 255, 0.8);
+    border-radius: 3px;
+    background-color: rgba(115, 193, 248, 0.8);
+}
+
+#reload {
+    float: right;
+}
+
+#speed {
+    float: left;
+}
+
+#controls {
+    width:80vmin;
+    margin:auto;
 }
