@@ -112,6 +112,8 @@ function end(message = "end") {
 }
 
 function movekey_handler(direction) {
-    velocity = controller4.to2D(direction, [1, -1])
+    let v = controller4.to2D(direction, [1, -1])
+    if (v[0] == -velocity[0] && v[1] == -velocity[1]) return;//invalid move
+    velocity = v;
     move(...velocity)
 }
