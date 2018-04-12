@@ -27,7 +27,7 @@ function move(dx, dy) {
     let status;
 
     //wall
-    if (!playground_util.in(x, y)) { end('❌'); return; }
+    if (!playground_util.in(x, y)) { body[0].blink(); end('😵'); return; }
     //food
     let eat_food = foods.find(food => food.x == x && food.y == y)
     let eat_full = false;
@@ -40,17 +40,23 @@ function move(dx, dy) {
             eat_food.detech()
             eat_full = true;
         }
-        body.push(new SnakeBody(0, 0))
+        body.push(new SnakeBody(0, 0))//pos not relevent
     }
 
     for (let i = body.length - 1; i > 0; --i) {
         body[i].pos = body[i - 1].pos
     }
-
-    body[0].x += dx;
-    body[0].y += dy;
+    body[0].pos = [x, y]
 
     if (eat_full) end('🍱');
+
+    let head = body[0]
+    let self_eat = body.find(b => b !== head && b.x == head.x && b.y == head.y)
+    if (self_eat) {
+        head.blink();
+        self_eat.blink();
+        end('😵');
+    }
 }
 
 class PlaygroundItem {
@@ -63,6 +69,10 @@ class PlaygroundItem {
 
     detech() {
         playground.removeChild(this.element)
+    }
+
+    blink() {
+        this.element.classList.add('blink')
     }
 
     set x(value) { this._x = value; this.element.style.gridColumn = value + 1; }

@@ -15,11 +15,11 @@
     border: 3px solid #878feb;
 }
 
-.snake{
-    border-radius:50% 50%;
+.snake {
+    border-radius: 50% 50%;
     background-color: greenyellow;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
 }
 
     .snake.head {
@@ -29,6 +29,18 @@
 .food {
     background-color: orange;
 }
+
+@keyframes blink {
+    50% {
+        opacity: 0.3;
+        background-color:red;
+    }
+}
+
+.blink {
+    animation: blink 2s ease-in-out infinite;
+}
+
 #hint {
     margin: auto;
     text-align: center;
