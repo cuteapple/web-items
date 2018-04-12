@@ -15,6 +15,7 @@ let playground_util = {
 }
 
 function init() {
+    document.getElementById('menu').style.display = 'none';
     playground = document.getElementById('playground')
     playground.style.gridTemplateColumns = `repeat(${width},1fr)`;
     playground.style.gridTemplateRows = `repeat(${height},1fr)`;

@@ -7,12 +7,16 @@
     <script src="snake.js"></script>
 </head>
 <body>
-    <div id="menu">
-        <div class="option" onclick="auto = true; init()">AUTO</div>
-        <div class="option" onclick="auto = false; init()">HAND</div>
-    </div>
     <div id="hint">snake</div>
     <div id="playground"></div>
     <button id="reload" onclick="window.location.reload()">RELOAD</button>
+
+    <div id="menu">
+        <label for="option-speed"></label>
+        <input id="option-speed" type="range" min="0" max="60" value="10" onchange="document.querySelector('#speed-value').innerHTML = this.value" />
+        <label for="option-speed" id="speed-value">10</label>
+        <button class="option" onclick="auto = true; init()">AUTO</button>
+        <button class="option" onclick="auto = false; init()">HAND</button>
+    </div>
 </body>
 </html>
