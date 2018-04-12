@@ -7,7 +7,7 @@ let width = 4
 let height = 4
 
 let playground_util = {
-    in: (x, y) => x >= 0 && x < width && y >= 0 && y < height,
+    in: (x, y) => x >= 0 && x < width && y >= 0 && y < height
 }
 
 function init() {
@@ -28,10 +28,20 @@ function move(dx, dy) {
 
     //wall
     if (!playground_util.in(x, y)) { end('❌'); return; }
-
     //food
-    //if (food) { }
-
+    let eat_food = foods.find(food => food.x == x && food.y == y)
+    let eat_full = false;
+    if (eat_food) {
+        let emptyPos = randomEmptyGrid();
+        if (emptyPos) {
+            eat_food.pos = emptyPos;
+        }
+        else {
+            eat_food.detech()
+            eat_full = true;
+        }
+        body.push(new SnakeBody(0, 0))
+    }
 
     for (let i = body.length - 1; i > 0; --i) {
         body[i].pos = body[i - 1].pos
@@ -39,6 +49,8 @@ function move(dx, dy) {
 
     body[0].x += dx;
     body[0].y += dy;
+
+    if (eat_full) end('🍱');
 }
 
 class PlaygroundItem {
@@ -48,6 +60,11 @@ class PlaygroundItem {
         this.y = y
         playground.appendChild(this.element)
     }
+
+    detech() {
+        playground.removeChild(this.element)
+    }
+
     set x(value) { this._x = value; this.element.style.gridColumn = value + 1; }
     get x() { return this._x; }
     set y(value) { this._y = value; this.element.style.gridRow = value + 1; }
