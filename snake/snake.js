@@ -21,7 +21,7 @@ function init() {
     body = [new SnakeBody(1, 0, true), new SnakeBody(0, 0), new SnakeBody(0, 1), new SnakeBody(0, 2)]
     foods = [new Food(...randomEmptyGrid())]
     controller.all = movekey_handler;
-    auto_timer = setInterval(() => move(...velocity), auto_int)
+    if (auto) auto_timer = setInterval(() => move(...velocity), auto_int)
 }
 
 function move(dx, dy) {
