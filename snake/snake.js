@@ -146,8 +146,10 @@ function end(message = "end") {
 
 function movekey_handler(direction) {
     let v = controller4.to2D(direction, [1, -1])
-    let ov = [body[0].x - body[1].x, body[0].y - body[1].y]
-    if (v[0] == -ov[0] && v[1] == -ov[1]) return;//invalid move
+    if (body.length > 1) {
+        let ov = [body[0].x - body[1].x, body[0].y - body[1].y]
+        if (v[0] == -ov[0] && v[1] == -ov[1]) return;//invalid move
+    }
     velocity = v;
     if (!auto) move(...velocity)
 }
