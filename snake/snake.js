@@ -3,8 +3,8 @@ let body = []
 let foods = []
 let controller = new controller4()
 let velocity = [1, 0]
-let width = 10
-let height = 10
+let width = 16
+let height = 16
 
 let auto = true;
 let auto_int = 100;
@@ -20,8 +20,12 @@ function init() {
     playground.style.gridTemplateRows = `repeat(${height},1fr)`;
     body = [new SnakeBody(1, 0, true), new SnakeBody(0, 0), new SnakeBody(0, 1), new SnakeBody(0, 2)]
     foods = [new Food(...randomEmptyGrid())]
-    controller.all = movekey_handler;
-    auto_timer = setInterval(() => move(...velocity), auto_int)
+    controller.all = (...args) => {
+        movekey_handler(...args);
+        auto_timer = setInterval(() => move(...velocity), auto_int);
+        controller.all = movekey_handler;
+    }
+
 }
 
 function move(dx, dy) {
