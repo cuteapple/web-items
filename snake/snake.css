@@ -10,8 +10,6 @@
 
 #playground {
     display: grid;
-    grid-template-columns: repeat(50, 1fr);
-    grid-template-rows: repeat(50, 1fr);
     grid-gap: 0px;
     background-color: lightskyblue;
     border: 3px solid #878feb;
