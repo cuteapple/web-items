@@ -3,8 +3,12 @@ let body = []
 let foods = []
 let controller = new controller4()
 let velocity = [1, 0]
-let width = 4
-let height = 4
+let width = 10
+let height = 10
+
+let auto = true;
+let auto_int = 100;
+let auto_timer;
 
 let playground_util = {
     in: (x, y) => x >= 0 && x < width && y >= 0 && y < height
@@ -17,6 +21,7 @@ function init() {
     body = [new SnakeBody(1, 0, true), new SnakeBody(0, 0), new SnakeBody(0, 1), new SnakeBody(0, 2)]
     foods = [new Food(...randomEmptyGrid())]
     controller.all = movekey_handler;
+    auto_timer = setInterval(() => move(...velocity), auto_int)
 }
 
 function move(dx, dy) {
@@ -135,12 +140,16 @@ function hint(text) {
 
 function end(message = "end") {
     controller.all = () => { }
+    clearInterval(auto_timer)
     hint(message)
 }
 
 function movekey_handler(direction) {
     let v = controller4.to2D(direction, [1, -1])
-    if (v[0] == -velocity[0] && v[1] == -velocity[1]) return;//invalid move
+    if (body.length > 1) {
+        let ov = [body[0].x - body[1].x, body[0].y - body[1].y]
+        if (v[0] == -ov[0] && v[1] == -ov[1]) return;//invalid move
+    }
     velocity = v;
-    move(...velocity)
+    if (!auto) move(...velocity)
 }
