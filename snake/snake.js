@@ -14,7 +14,8 @@ function init() {
     playground = document.getElementById('playground')
     playground.style.gridTemplateColumns = `repeat(${width},1fr)`;
     playground.style.gridTemplateRows = `repeat(${height},1fr)`;
-    body = [new SnakeBody(0, 0, true), new SnakeBody(0, 1), new SnakeBody(0, 2), new Food(0, 3)] // playground.children
+    body = [new SnakeBody(1, 0, true), new SnakeBody(0, 0), new SnakeBody(0, 1), new SnakeBody(0, 2)]
+    foods = [new Food(...randomEmptyGrid())]
     controller.all = movekey_handler;
 }
 
