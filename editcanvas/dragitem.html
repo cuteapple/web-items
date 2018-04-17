@@ -1,0 +1,36 @@
+﻿<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Drag</title>
+    <script type='text/javascript'>
+        class dragHandler{
+            constructor(target: Element) {
+                this.element = target;
+                this.dragging = false;
+                target.addEventListener('pointerdown', (e) => this.pointerDown(e))
+                target.addEventListener('pointermove', (e) => this.pointerMove(e))
+                target.addEventListener('pointerup', (e) => this.pointerUp(e))
+            }
+
+            pointerDown() { this.dragging = true; }
+            pointerMove(e) { if (!this.dragging) return; /*...*/}
+            pointerUp(e) { if (!this.dragging) return; /*...*/}
+        }
+
+        function init() {
+            let target = [...document.querySelectorAll('.draggable')]
+
+            for (let item of target) {
+                new dragHandler(item)
+            }
+        }
+
+    </script>
+</head>
+
+<body onload="init">
+    <div style="width:300px;height:300px;border: 2px solid black; position:relative">
+        <div class="graggable" style="position:absolute"></div>
+    </div>
+</body>
+</html>
