@@ -8,8 +8,10 @@
 
 <body>
     <section>
-        <input type='file' id='imgfile' onchange="onUploadImage()" />
+        <input type="file" id="imgfile" onchange="onUploadImage(this)" />
     </section>
-    <canvas id="canvas" style="resize:both;overflow:hidden;display:block"></canvas>
+    <section>
+        <canvas id="canvas" style="resize:both;overflow:hidden;display:block"></canvas>
+    </section>
 </body>
 </html>
