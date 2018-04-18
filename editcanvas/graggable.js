@@ -46,3 +46,4 @@ class dragHandler {
     }
 }
 
+function handleDrag(elem){ return new dragHandler(elem); }
