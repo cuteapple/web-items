@@ -1,3 +1,8 @@
+
+///
+/// upload image and render on canvas
+/// 
+
 async function readAsDataURLAsync(file) {
     return new Promise((res, rej) => {
         let reader = new FileReader()
@@ -27,16 +32,47 @@ async function loadImageAsync() {
     return img
 }
 
+let context;
+
 async function onUploadImage() {
     let img = await loadImageAsync();
     let canvas = document.getElementById('canvas')
     canvas.width = img.width
     canvas.height = img.height
-    let ctx = canvas.getContext('2d')
-    ctx.mozImageSmoothingEnabled = false;
-    ctx.webkitImageSmoothingEnabled = false;
-    ctx.msImageSmoothingEnabled = false;
-    ctx.imageSmoothingEnabled = false;
-    //ctx.drawImage(img, 0, 0)
-    ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height)
+    context = canvas.getContext('2d')
+    /*
+    context.mozImageSmoothingEnabled = false;
+    context.webkitImageSmoothingEnabled = false;
+    context.msImageSmoothingEnabled = false;
+    context.imageSmoothingEnabled = false;
+    context.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height)
+    */
+    context.drawImage(img, 0, 0)
+}
+
+
+///
+/// control points
+///
+
+class ControlPoints {
+    constructor(template, onto) {
+        this.template = template;
+        this.onto = onto;
+        this.nodes = []
+    }
+    new() {
+        let node = this.template.cloneNode(true)
+        let drag = new dragHandler(node, this.onto)
+        this.nodes.push(node)
+        this.onto.appendChild(node)
+    }
+    delete(node) {
+        let n = this.nodes.find(x => X === node)
+        if (!n) {
+            console.error({ message: "try to delete unrelated node", this:this,node })
+            console.warn({message:""})
+            return;
+        }
+    }
 }
