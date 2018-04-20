@@ -2,35 +2,21 @@
 <head>
     <meta charset="UTF-8" />
     <title>Drag</title>
-    <script type='text/javascript'>
-        class dragHandler{
-            constructor(target: Element) {
-                this.element = target;
-                this.dragging = false;
-                target.addEventListener('pointerdown', (e) => this.pointerDown(e))
-                target.addEventListener('pointermove', (e) => this.pointerMove(e))
-                target.addEventListener('pointerup', (e) => this.pointerUp(e))
-            }
-
-            pointerDown() { this.dragging = true; }
-            pointerMove(e) { if (!this.dragging) return; /*...*/}
-            pointerUp(e) { if (!this.dragging) return; /*...*/}
-        }
-
+    <script src="graggable.js"></script>
+    <script>
         function init() {
-            let target = [...document.querySelectorAll('.draggable')]
+            let target = document.getElementsByClassName('graggable')
 
             for (let item of target) {
-                new dragHandler(item)
+                handleDrag(item)
             }
         }
-
     </script>
 </head>
 
-<body onload="init">
+<body onload="init()">
     <div style="width:300px;height:300px;border: 2px solid black; position:relative">
-        <div class="graggable" style="position:absolute"></div>
+        <div class="graggable" style="position:absolute; width:10px;height:10px;background-color:aqua;"></div>
     </div>
 </body>
 </html>
