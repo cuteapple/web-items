@@ -76,3 +76,8 @@ class ControlPoints {
         }
     }
 }
+
+let controlPoints
+function init() {
+    controlPoints = new ControlPoints(document.getElementById('contorl-point-template'), document.getElementById('overlap'))
+}

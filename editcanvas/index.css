@@ -1,0 +1,14 @@
+.control-point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: lightsteelblue;
+    border-radius: 50% 50%;
+    display: inline-block;
+}
+
+#overlap{
+    position:relative;
+    width:100%;
+    height:100%;
+}
