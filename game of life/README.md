@@ -3,4 +3,4 @@
 
  - [js] requestAnimationFrame + fps constraint class
  - [css] grid layout
- - [js] directly usable game-of-life class
+ - [js] reusable game-of-life class
