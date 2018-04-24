@@ -1,8 +1,14 @@
 something
 
-- vanilla es6 (zero dependency)
+---
+
+- **vanilla es6** (zero dependency)
 - css3
 - html5
+
+
+- **easy and clean code**
+- keep it simple
 
 ---
 
