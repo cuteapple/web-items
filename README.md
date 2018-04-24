@@ -14,3 +14,8 @@ something
 
 - snake https://cuteapple.github.io/web-items/snake/
 <img src="snake/cover.PNG" width="256">
+
+---
+
+- game of life https://cuteapple.github.io/web-items/game%20of%20life/
+<img src="game%20of%20life/cover.png" width="256">
