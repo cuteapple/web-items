@@ -1,5 +1,9 @@
 something
 
+- vanilla es6 (zero dependency)
+- css3
+- html5
+
 ---
 
 - ooxx https://cuteapple.github.io/web-items/ooxx/
