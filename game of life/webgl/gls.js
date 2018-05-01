@@ -147,8 +147,8 @@ void main() {
     ivec2 coord = ivec2(floor(gl_FragCoord.xy));
     float state = texelFetch(field,coord,0).r;
     
-  /* outColor = vec4(state,0,0,0);*/
-outColor = vec4(0,1,0,1);
+    outColor = vec4(state,0,0,1);
+    /*outColor = vec4(0,1,0,1);*/
 }
 `
 
