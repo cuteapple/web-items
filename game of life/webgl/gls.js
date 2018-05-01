@@ -107,7 +107,8 @@ class GameOfLife {
         gl.bindTexture(gl.TEXTURE_2D, this.field)
         gl.uniform1i(this.uniforms.field,0)
 
-        gl.viewport(0, 0, this.width, this.height)
+        //gl.viewport(0, 0, this.width, this.height)
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
         gl.clearColor(0, 0, 0, 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
