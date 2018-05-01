@@ -42,10 +42,10 @@ class GameOfLife {
         let buffer_pos = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer_pos)
         let pos = [].concat([-1, -1], [1, -1], [1, 1], [-1, 1])
-        gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(pos), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.STATIC_DRAW);
 
         gl.enableVertexAttribArray(attributes.pos)
-        gl.vertexAttribPointer(attributes.pos, 2, gl.UNSIGNED_BYTE, false, 0, 0)
+        gl.vertexAttribPointer(attributes.pos, 2, gl.FLOAT, false, 0, 0)
 
         ///
         /// field
