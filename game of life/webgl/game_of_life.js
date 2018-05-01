@@ -5,6 +5,8 @@ let game_of_life
 
 function init() {
     playground = document.getElementById('playground')
+    playground.width = width;
+    playground.height = height;
     let gl = playground.getContext("webgl2")
     game_of_life = new GameOfLife(gl, width,height)
 
