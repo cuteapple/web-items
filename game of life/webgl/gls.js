@@ -41,11 +41,11 @@ class GameOfLife {
 
         let buffer_pos = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer_pos)
-        let pos = [].concat([0, 0], [width, 0], [width, height], [0, height])
-        gl.bufferData(gl.ARRAY_BUFFER, new Uint16Array(pos), gl.STATIC_DRAW);
+        let pos = [].concat([-1, -1], [1, -1], [1, 1], [-1, 1])
+        gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(pos), gl.STATIC_DRAW);
 
         gl.enableVertexAttribArray(attributes.pos)
-        gl.vertexAttribPointer(attributes.pos, 2, gl.UNSIGNED_SHORT, false, 0, 0)
+        gl.vertexAttribPointer(attributes.pos, 2, gl.UNSIGNED_BYTE, false, 0, 0)
 
         ///
         /// field
@@ -102,6 +102,7 @@ class GameOfLife {
         let gl = this.gl
         gl.useProgram(this.program)
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb_new)
+        gl.bindFramebuffer(gl.FRAMEBUFFER,null)
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.field)
         gl.uniform1i(this.uniforms.field,0)
@@ -112,9 +113,9 @@ class GameOfLife {
         gl.clear(gl.COLOR_BUFFER_BIT)
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4)
 
-        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb_new);
-        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_old);
-        gl.blitFramebuffer(0, 0, this.width, this.height, 0, 0, this.width, this.height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+        //gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb_new);
+        //gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_old);
+        //gl.blitFramebuffer(0, 0, this.width, this.height, 0, 0, this.width, this.height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
         //swap field and new_field
     }
 
@@ -145,7 +146,8 @@ void main() {
     ivec2 coord = ivec2(floor(gl_FragCoord.xy));
     float state = texelFetch(field,coord,0).r;
     
-   outColor = vec4(state,0,0,0);
+  /* outColor = vec4(state,0,0,0);*/
+outColor = vec4(0,1,0,1);
 }
 `
 
