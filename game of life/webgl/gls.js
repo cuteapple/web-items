@@ -1,9 +1,17 @@
 class GameOfLife {
+    /**
+     * WebGL frame buffer based game-of-life
+     * @param {WebGLRenderingContext} gl
+     * @param {Number} width
+     * @param {Number} height
+     */
     constructor(gl, width, height) {
         this.width = width;
         this.height = height;
-        //this.initShaders()
 
+        ///
+        /// program
+        ///
         let vs = gl.createShader(gl.VERTEX_SHADER)
         gl.shaderSource(vs, vertex_shader_source)
         gl.compileShader(vs)
@@ -24,6 +32,10 @@ class GameOfLife {
             field: gl.getUniformLocation(program, 'field')
         }
 
+        ///
+        /// vertex
+        ///
+
         let vao = gl.createVertexArray()
         gl.bindVertexArray(vao)
 
@@ -32,57 +44,77 @@ class GameOfLife {
         let pos = [].concat([0, 0], [width, 0], [width, height], [0, height])
         gl.bufferData(gl.ARRAY_BUFFER, new Uint16Array(pos), gl.STATIC_DRAW);
 
-        for (let a of attributes)
-            gl.enableVertexAttribArray(a)
-
+        gl.enableVertexAttribArray(attributes.pos)
         gl.vertexAttribPointer(attributes.pos, 2, gl.UNSIGNED_SHORT, false, 0, 0)
+
+        ///
+        /// field
+        ///
+
+
+        let field_data = new Uint8Array(width * height);
+        field_data = field_data.map(x => Math.random() > 0.5 ? 255 : 0)
 
         let field = gl.createTexture()
         gl.bindTexture(gl.TEXTURE_2D, field)
-
-        let field_data = new Uint8Array(width * height);
-        field_data = field_data.map(x => Math.random() > 0.5 ? 511 : 0)//255?
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, width, height, 0, gl.R8, gl.UNSIGNED_BYTE, field_data)
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, width, height, 0, gl.RED, gl.UNSIGNED_BYTE, field_data)
 
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+        ///
+        /// new field, render buffer
+        ///
 
         let new_field = gl.createTexture()
         gl.bindTexture(gl.TEXTURE_2D, new_field)
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, width, height, 0, gl.R8, gl.UNSIGNED_BYTE, null)
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, width, height, 0, gl.RED, gl.UNSIGNED_BYTE, null)
+
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-        let fb = gl.createFramebuffer()
-        gl.bindBuffer(gl.FRAMEBUFFER, fb)
+        let fb_new = gl.createFramebuffer()
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb_new)
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, new_field, 0)
+
+
+        let fb_old = gl.createFramebuffer()
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb_old)
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, field, 0)
 
-        let textureLocation = 0
-        gl.uniform1i(uniforms.field, 0)
-
+        this.gl = gl
         this.field = field
         this.new_field = new_field
         this.program = program
-        this.fb = fb
-        this.textureLocation = textureLocation
+        this.fb_new = fb_new
+        this.fb_old = fb_old
+        this.attributes = attributes;
+        this.uniforms = uniforms;
     }
 
     nextEpoch() {
+        let gl = this.gl
         gl.useProgram(this.program)
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb)
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb_new)
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.field)
-        gl.viewport(this.width, this.height)
+        gl.uniform1i(this.uniforms.field,0)
+
+        gl.viewport(0, 0, this.width, this.height)
 
         gl.clearColor(0, 0, 0, 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
-        gl.drawArrays(gl.TRIANGLE_FAN, 0, 4 * 2)//?
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, 4)
 
-        gl.bindFramebuffer(GL_READ_FRAMEBUFFER, src);
-        gl.bindFramebuffer(GL_DRAW_FRAMEBUFFER, dst);
-        gl.blitFramebuffer(src_left, src_bottom, src_right, src_top, 0, 0, dst_width, dst_height, mask, GL_NEAREST);
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb_new);
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_old);
+        gl.blitFramebuffer(0, 0, this.width, this.height, 0, 0, this.width, this.height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
         //swap field and new_field
     }
 
@@ -117,8 +149,8 @@ void main() {
 }
 `
 
-const vertex_shader_direct_source = 
-   `#version 300 es
+const vertex_shader_direct_source =
+    `#version 300 es
 in vec2 pos;
 in vec2 texCoord;
 out vec2 v_texCoord;
