@@ -124,6 +124,23 @@ class GameOfLife {
         this.attributes = attributes;
         this.uniforms = uniforms;
         this.vao = vao
+
+        this.initRenderProgram()
+    }
+
+    initRenderProgram() {
+        let program = CreateSimpleProgram(gl, render_vertex_shader_source, render_fragment_shader_source)
+
+        let attributes = {
+            pos: gl.getAttribLocation(program, 'pos'),
+            texCoord: gl.getAttribLocation(program, 'texCoord')
+        }
+        let uniforms = {
+            field: gl.getUniformLocation(program, 'field')
+        }
+
+        let vao = gl.createVertexArray()
+        let 
     }
 
     nextEpoch() {
@@ -143,10 +160,9 @@ class GameOfLife {
         gl.clear(gl.COLOR_BUFFER_BIT)
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4)
 
-        //gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb_new);
-        //gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_old);
-        //gl.blitFramebuffer(0, 0, this.width, this.height, 0, 0, this.width, this.height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-        //swap field and new_field
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb_new);
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_old);
+        gl.blitFramebuffer(0, 0, this.width, this.height, 0, 0, this.width, this.height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     }
 
     render() {
