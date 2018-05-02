@@ -27,5 +27,8 @@ something
 
 ---
 
-- game of life https://cuteapple.github.io/web-items/game%20of%20life/
-<img src="game%20of%20life/cover.png" width="256">
+- game of life https://cuteapple.github.io/web-items/game%20of%20life/css%2Bjs
+<img src="game%20of%20life/css+js/cover.png" width="256">
+
+- game of life (WebGL) https://cuteapple.github.io/web-items/game%20of%20life/webgl
+<img src="game%20of%20life/webgl/cover.png" width="256">
