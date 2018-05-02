@@ -119,6 +119,7 @@ class GameOfLife {
         ///
         /// transition table
         ///
+        /*
         let transition_table = gl.createTexture()
         gl.bindTexture(gl.TEXTURE_2D, new_field)
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
@@ -140,7 +141,7 @@ class GameOfLife {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-
+        */
         this.gl = gl
         this.program = program
 
@@ -148,7 +149,7 @@ class GameOfLife {
         this.new_field = new_field
         this.fb_new = fb_new
         this.fb_old = fb_old
-        this.transition_table = transition_table
+        //this.transition_table = transition_table
 
         this.attributes = attributes;
         this.uniforms = uniforms;
@@ -183,8 +184,6 @@ class GameOfLife {
 
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-        gl.activeTexture(gl.TEXTURE1)
-        gl.bindTexture(gl.TEXTURE_2D, null)
     }
 
     initRenderProgram() {
@@ -275,8 +274,9 @@ void main() {
     ));
 
     int this_state = int(round(texelFetch(field,coord,0).r));
-    float next_state = texelFetch(transition, ivec2(this_state,state),0).r;
-    next_state = 0.0f;
+    //float next_state = texelFetch(transition, ivec2(this_state,state),0).r;
+    //next_state = 0.0f;
+    float next_state = float(state)/8.0f;
     outColor = vec4(next_state,0,0,1);
 }
 `
