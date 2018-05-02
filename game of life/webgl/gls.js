@@ -1,6 +1,41 @@
+/**
+ * Create a simple webgl program contains vertex and fragment shader
+ * @param {WebGLRenderingContext} gl
+ * @param {string} vertex_shader_source
+ * @param {string} fragment_shader_source
+ */
+function CreateSimpleProgram(gl, vertex_shader_source, fragment_shader_source) {
+
+    let vs = gl.createShader(gl.VERTEX_SHADER)
+    gl.shaderSource(vs, vertex_shader_source)
+    gl.compileShader(vs)
+    console.log(gl.getShaderInfoLog(vs));
+
+    let fs = gl.createShader(gl.FRAGMENT_SHADER)
+    gl.shaderSource(fs, fragment_shader_source)
+    gl.compileShader(fs)
+    console.log(gl.getShaderInfoLog(fs));
+
+    let program = gl.createProgram()
+    gl.attachShader(program, vs)
+    gl.attachShader(program, fs)
+    gl.linkProgram(program)
+    console.log(gl.getProgramInfoLog(program));
+
+    //clean up shaders (the programe is still valid)
+    gl.deleteShader(vs)
+    gl.deleteShader(fs)
+    gl.detachShader(program, vs)
+    gl.detachShader(program, fs)
+
+    return program
+}
+
+/**
+ * WebGL frame buffer based game-of-life
+ */
 class GameOfLife {
     /**
-     * WebGL frame buffer based game-of-life
      * @param {WebGLRenderingContext} gl
      * @param {Number} width
      * @param {Number} height
@@ -12,19 +47,10 @@ class GameOfLife {
         ///
         /// program
         ///
-        let vs = gl.createShader(gl.VERTEX_SHADER)
-        gl.shaderSource(vs, vertex_shader_source)
-        gl.compileShader(vs)
-        console.log(gl.getShaderInfoLog(vs));
-        let fs = gl.createShader(gl.FRAGMENT_SHADER)
-        gl.shaderSource(fs, fragment_shader_source)
-        gl.compileShader(fs)
-        console.log(gl.getShaderInfoLog(fs));
-        let program = gl.createProgram()
-        gl.attachShader(program, vs)
-        gl.attachShader(program, fs)
-        gl.linkProgram(program)
-        console.log(gl.getProgramInfoLog(program));
+
+        let program = CreateSimpleProgram(gl, vertex_shader_source, fragment_shader_source)
+        gl.useProgram(program)
+
         let attributes = {
             pos: gl.getAttribLocation(program, 'pos')
         }
@@ -102,10 +128,10 @@ class GameOfLife {
         let gl = this.gl
         gl.useProgram(this.program)
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb_new)
-        gl.bindFramebuffer(gl.FRAMEBUFFER,null)
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null)
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.field)
-        gl.uniform1i(this.uniforms.field,0)
+        gl.uniform1i(this.uniforms.field, 0)
 
         gl.viewport(0, 0, this.width, this.height)
         //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
@@ -159,6 +185,40 @@ void main() {
     /*outColor = vec4(0,1,0,1);*/
 }
 `
+
+class SimpleTextureRendererProgram {
+    /**
+     * 
+     * @param {WebGLRenderingContext} gl
+     */
+    constructor(gl) {
+
+    }
+
+
+    get vertex_source() {
+        return `#version 300 es
+in vec2 pos;
+in vec2 texCoord;
+out vec2 v_texCoord;
+
+void main() {
+    gl_Position = pos;
+    v_texCoord = texCoord;
+}`
+    }
+    get fragment_source() {
+        return `#version 300 es
+in vec2 pos;
+in vec2 texCoord;
+out vec2 v_texCoord;
+
+void main() {
+  gl_Position = pos;
+  v_texCoord = texCoord;
+}`
+    }
+}
 
 const vertex_shader_direct_source =
     `#version 300 es
