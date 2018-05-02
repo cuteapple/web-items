@@ -220,13 +220,15 @@ const fragment_shader_source =
     `#version 300 es
 
 precision mediump float;
+precision mediump int;
 
 uniform sampler2D field;
+uniform sampler2D transition; /*(current state, surrounding active) => next state */
 out vec4 outColor;
 
 void main() {
     ivec2 coord = ivec2(floor(gl_FragCoord.xy));
-    float state = 
+    int state = int(round(
         texelFetch(field,coord+ivec2(-1,-1),0).r
         +texelFetch(field,coord+ivec2(-1,0),0).r
         +texelFetch(field,coord+ivec2(-1,1),0).r
@@ -234,10 +236,13 @@ void main() {
         +texelFetch(field,coord+ivec2(0,1),0).r
         +texelFetch(field,coord+ivec2(1,-1),0).r
         +texelFetch(field,coord+ivec2(1,0),0).r
-        +texelFetch(field,coord+ivec2(1,1),0).r;
+        +texelFetch(field,coord+ivec2(1,1),0).r
+    ));
 
-    outColor = vec4(state/8.0f,0,0,1);
-    /*outColor = vec4(0,1,0,1);*/
+    int this_state = int(round(texelFetch(field,coord,0).r));
+    float next_state = texelFetch(transition, ivec2(this_state,state),0).r;
+
+    outColor = vec4(next_state,0,0,1);
 }
 `
 
