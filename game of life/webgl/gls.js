@@ -74,6 +74,31 @@ class GameOfLife {
         gl.vertexAttribPointer(attributes.pos, 2, gl.FLOAT, false, 0, 0)
 
         ///
+        /// transition table
+        ///
+
+        let transition_table = gl.createTexture()
+        gl.bindTexture(gl.TEXTURE_2D, new_field)
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 2, 9, 0, gl.RED, gl.UNSIGNED_BYTE,
+            new Uint8Array([
+                0, 0,
+                0, 0,
+                0, 255,
+                255, 255,
+                0, 0,
+                0, 0,
+                0, 0,
+                0, 0,
+                0, 0
+            ])
+        )
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+        ///
         /// field (with random data)
         ///
 
@@ -115,31 +140,6 @@ class GameOfLife {
         let fb_old = gl.createFramebuffer()
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb_old)
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, field, 0)
-
-        ///
-        /// transition table
-        ///
-        
-        let transition_table = gl.createTexture()
-        gl.bindTexture(gl.TEXTURE_2D, new_field)
-        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 2, 9, 0, gl.RED, gl.UNSIGNED_BYTE,
-            new Uint8Array([
-                0, 0,
-                0, 0,
-                0, 255,
-                255, 255,
-                0, 0,
-                0, 0,
-                0, 0,
-                0, 0,
-                0, 0
-            ])
-        )
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
         
         this.gl = gl
