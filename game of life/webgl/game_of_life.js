@@ -1,6 +1,6 @@
 ﻿let playground
-let width = 50
-let height = 50
+let width = 512
+let height = 512
 let game_of_life
 
 function init() {
@@ -10,11 +10,11 @@ function init() {
     let gl = playground.getContext("webgl2")
     game_of_life = new GameOfLife(gl, width,height)
 
-    /*
+    
     timer = new AnimationInterval(() => {
         game_of_life.nextEpoch()
         game_of_life.render()
-    }, 100)*/
+    }, 16)
 }
 
 class AnimationInterval {
