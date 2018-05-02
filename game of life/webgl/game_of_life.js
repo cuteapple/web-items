@@ -1,19 +1,23 @@
 ﻿let playground
 
-const width = window.innerWidth
+let scwidth = window.innerWidth
     || document.documentElement.clientWidth
     || document.body.clientWidth;
 
-const height = window.innerHeight
+let scheight = window.innerHeight
     || document.documentElement.clientHeight
     || document.body.clientHeight;
+
+const pixel_per_unit = 3
+let width = Math.floor(scwidth / pixel_per_unit)
+let height = Math.floor(scheight / pixel_per_unit)
 
 let game_of_life
 
 function init() {
     playground = document.getElementById('playground')
-    playground.style.width = width;
-    playground.style.height = height; // full client area
+    playground.style.width = `${scwidth}px`;
+    playground.style.height = `${scheight}px`; // full client area
     playground.width = width;
     playground.height = height;
     let gl = playground.getContext("webgl2")
