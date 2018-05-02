@@ -126,8 +126,8 @@ class GameOfLife {
             new Uint8Array([
                 0, 0,
                 0, 0,
-                0, 1,
-                1, 1,
+                0, 255,
+                255, 255,
                 0, 0,
                 0, 0,
                 0, 0,
@@ -161,18 +161,17 @@ class GameOfLife {
         let gl = this.gl
         gl.useProgram(this.program)
         gl.bindVertexArray(this.vao)
-        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_new)
 
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.field)
         gl.uniform1i(this.uniforms.field, 0)
 
-        gl.activeTexture(gl.TEXTURE1)
-        gl.bindTexture(gl.TEXTURE_2D, this.transition_table)
-        gl.uniform1i(this.uniforms.transition, 1)
+        //gl.activeTexture(gl.TEXTURE1)
+        //gl.bindTexture(gl.TEXTURE_2D, this.transition_table)
+        //gl.uniform1i(this.uniforms.transition, 1)
 
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_new)
         gl.viewport(0, 0, this.width, this.height)
-        //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
         gl.clearColor(0, 0, 0, 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
@@ -184,6 +183,8 @@ class GameOfLife {
 
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+        gl.activeTexture(gl.TEXTURE1)
+        gl.bindTexture(gl.TEXTURE_2D, null)
     }
 
     initRenderProgram() {
@@ -275,7 +276,7 @@ void main() {
 
     int this_state = int(round(texelFetch(field,coord,0).r));
     float next_state = texelFetch(transition, ivec2(this_state,state),0).r;
-
+    next_state = 0.0f;
     outColor = vec4(next_state,0,0,1);
 }
 `
