@@ -1,6 +1,41 @@
+/**
+ * Create a simple webgl program contains vertex and fragment shader
+ * @param {WebGLRenderingContext} gl
+ * @param {string} vertex_shader_source
+ * @param {string} fragment_shader_source
+ */
+function CreateSimpleProgram(gl, vertex_shader_source, fragment_shader_source) {
+
+    let vs = gl.createShader(gl.VERTEX_SHADER)
+    gl.shaderSource(vs, vertex_shader_source)
+    gl.compileShader(vs)
+    console.log(gl.getShaderInfoLog(vs));
+
+    let fs = gl.createShader(gl.FRAGMENT_SHADER)
+    gl.shaderSource(fs, fragment_shader_source)
+    gl.compileShader(fs)
+    console.log(gl.getShaderInfoLog(fs));
+
+    let program = gl.createProgram()
+    gl.attachShader(program, vs)
+    gl.attachShader(program, fs)
+    gl.linkProgram(program)
+    console.log(gl.getProgramInfoLog(program));
+
+    //clean up shaders (the programe is still valid)
+    gl.deleteShader(vs)
+    gl.deleteShader(fs)
+    gl.detachShader(program, vs)
+    gl.detachShader(program, fs)
+
+    return program
+}
+
+/**
+ * WebGL frame buffer based game-of-life
+ */
 class GameOfLife {
     /**
-     * WebGL frame buffer based game-of-life
      * @param {WebGLRenderingContext} gl
      * @param {Number} width
      * @param {Number} height
@@ -12,19 +47,9 @@ class GameOfLife {
         ///
         /// program
         ///
-        let vs = gl.createShader(gl.VERTEX_SHADER)
-        gl.shaderSource(vs, vertex_shader_source)
-        gl.compileShader(vs)
-        console.log(gl.getShaderInfoLog(vs));
-        let fs = gl.createShader(gl.FRAGMENT_SHADER)
-        gl.shaderSource(fs, fragment_shader_source)
-        gl.compileShader(fs)
-        console.log(gl.getShaderInfoLog(fs));
-        let program = gl.createProgram()
-        gl.attachShader(program, vs)
-        gl.attachShader(program, fs)
-        gl.linkProgram(program)
-        console.log(gl.getProgramInfoLog(program));
+
+        let program = CreateSimpleProgram(gl, vertex_shader_source, fragment_shader_source)
+
         let attributes = {
             pos: gl.getAttribLocation(program, 'pos')
         }
@@ -48,9 +73,8 @@ class GameOfLife {
         gl.vertexAttribPointer(attributes.pos, 2, gl.FLOAT, false, 0, 0)
 
         ///
-        /// field
+        /// field (with random data)
         ///
-
 
         let field_data = new Uint8Array(width * height);
         field_data = field_data.map(x => Math.random() > 0.5 ? 255 : 0)
@@ -66,7 +90,7 @@ class GameOfLife {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
         ///
-        /// new field, render buffer
+        /// new field (empty)
         ///
 
         let new_field = gl.createTexture()
@@ -79,10 +103,13 @@ class GameOfLife {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
+        ///
+        /// frame buffers
+        ///
+
         let fb_new = gl.createFramebuffer()
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb_new)
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, new_field, 0)
-
 
         let fb_old = gl.createFramebuffer()
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb_old)
@@ -96,16 +123,19 @@ class GameOfLife {
         this.fb_old = fb_old
         this.attributes = attributes;
         this.uniforms = uniforms;
+        this.vao = vao
+
+        this.initRenderProgram()
     }
 
     nextEpoch() {
         let gl = this.gl
         gl.useProgram(this.program)
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb_new)
-        gl.bindFramebuffer(gl.FRAMEBUFFER,null)
+        gl.bindVertexArray(this.vao)
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_new)
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.field)
-        gl.uniform1i(this.uniforms.field,0)
+        gl.uniform1i(this.uniforms.field, 0)
 
         gl.viewport(0, 0, this.width, this.height)
         //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
@@ -114,14 +144,65 @@ class GameOfLife {
         gl.clear(gl.COLOR_BUFFER_BIT)
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4)
 
-        //gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb_new);
-        //gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_old);
-        //gl.blitFramebuffer(0, 0, this.width, this.height, 0, 0, this.width, this.height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-        //swap field and new_field
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.fb_new);
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_old);
+        gl.blitFramebuffer(0, 0, this.width, this.height, 0, 0, this.width, this.height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
     }
 
+    initRenderProgram() {
+        let gl = this.gl
+        let program = CreateSimpleProgram(gl, render_vertex_shader_source, render_fragment_shader_source)
+        let u_field = gl.getUniformLocation(program, 'field')
+
+        let vao = gl.createVertexArray()
+        gl.bindVertexArray(vao)
+
+        //pos attribute
+        {
+            let apos = gl.getAttribLocation(program, 'pos')
+            let buffer = gl.createBuffer()
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, 1, 1, -1, 1]), gl.STATIC_DRAW);//full
+            gl.enableVertexAttribArray(apos)
+            gl.vertexAttribPointer(apos, 2, gl.FLOAT, false, 0, 0)
+        }
+
+        //texCoord attribute
+        {
+            let atex = gl.getAttribLocation(program, 'texCoord')
+            let buffer = gl.createBuffer()
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]), gl.STATIC_DRAW);//full
+            gl.enableVertexAttribArray(atex)
+            gl.vertexAttribPointer(atex, 2, gl.FLOAT, false, 0, 0)
+        }
+
+        this.renderProgram = {
+            program,
+            vao,
+            u_field
+        };
+    }
+
+
     render() {
-        //simple pass-thru shader
+        let gl = this.gl
+        let { program, vao, u_field } = this.renderProgram
+
+        gl.useProgram(program)
+        gl.bindVertexArray(vao)
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, this.field)
+        gl.uniform1i(u_field, 0)
+        
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null)
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+        gl.clearColor(0, 0, 0, 1)
+        gl.clear(gl.COLOR_BUFFER_BIT)
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, 4)
     }
 }
 
@@ -160,26 +241,29 @@ void main() {
 }
 `
 
-const vertex_shader_direct_source =
+
+const render_vertex_shader_source =
     `#version 300 es
 in vec2 pos;
 in vec2 texCoord;
 out vec2 v_texCoord;
 
 void main() {
-  gl_Position = pos;
+  gl_Position = vec4(pos,0,1);
   v_texCoord = texCoord;
 }
 `
-
-const fragment_shader_direct_source =
+//or multi target render?
+const render_fragment_shader_source =
     `#version 300 es
 
+precision mediump float;
 uniform sampler2D field;
 in vec2 v_texCoord;
 out vec4 outColor;
 
 void main() {
-   outColor = vec4(tex2D(),1);
+    float state = texture(field, v_texCoord).r;
+    outColor = vec4(state,state,state,1);
 }
 `
