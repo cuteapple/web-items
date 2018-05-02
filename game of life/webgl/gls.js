@@ -78,7 +78,7 @@ class GameOfLife {
         ///
 
         let transition_table = gl.createTexture()
-        gl.bindTexture(gl.TEXTURE_2D, new_field)
+        gl.bindTexture(gl.TEXTURE_2D, transition_table)
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 2, 9, 0, gl.RED, gl.UNSIGNED_BYTE,
             new Uint8Array([
@@ -167,9 +167,9 @@ class GameOfLife {
         gl.bindTexture(gl.TEXTURE_2D, this.field)
         gl.uniform1i(this.uniforms.field, 0)
 
-        //gl.activeTexture(gl.TEXTURE1)
-        //gl.bindTexture(gl.TEXTURE_2D, this.transition_table)
-        //gl.uniform1i(this.uniforms.transition, 1)
+        gl.activeTexture(gl.TEXTURE1)
+        gl.bindTexture(gl.TEXTURE_2D, this.transition_table)
+        gl.uniform1i(this.uniforms.transition, 1)
 
         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_new)
         gl.viewport(0, 0, this.width, this.height)
