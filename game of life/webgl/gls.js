@@ -119,7 +119,7 @@ class GameOfLife {
         ///
         /// transition table
         ///
-        /*
+        
         let transition_table = gl.createTexture()
         gl.bindTexture(gl.TEXTURE_2D, new_field)
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
@@ -141,7 +141,7 @@ class GameOfLife {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-        */
+        
         this.gl = gl
         this.program = program
 
@@ -149,7 +149,7 @@ class GameOfLife {
         this.new_field = new_field
         this.fb_new = fb_new
         this.fb_old = fb_old
-        //this.transition_table = transition_table
+        this.transition_table = transition_table
 
         this.attributes = attributes;
         this.uniforms = uniforms;
