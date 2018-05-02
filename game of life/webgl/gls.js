@@ -49,7 +49,6 @@ class GameOfLife {
         ///
 
         let program = CreateSimpleProgram(gl, vertex_shader_source, fragment_shader_source)
-        gl.useProgram(program)
 
         let attributes = {
             pos: gl.getAttribLocation(program, 'pos')
@@ -74,9 +73,8 @@ class GameOfLife {
         gl.vertexAttribPointer(attributes.pos, 2, gl.FLOAT, false, 0, 0)
 
         ///
-        /// field
+        /// field (with random data)
         ///
-
 
         let field_data = new Uint8Array(width * height);
         field_data = field_data.map(x => Math.random() > 0.5 ? 255 : 0)
@@ -92,7 +90,7 @@ class GameOfLife {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
         ///
-        /// new field, render buffer
+        /// new field (empty)
         ///
 
         let new_field = gl.createTexture()
@@ -105,10 +103,13 @@ class GameOfLife {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
+        ///
+        /// frame buffers
+        ///
+
         let fb_new = gl.createFramebuffer()
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb_new)
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, new_field, 0)
-
 
         let fb_old = gl.createFramebuffer()
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb_old)
@@ -122,11 +123,13 @@ class GameOfLife {
         this.fb_old = fb_old
         this.attributes = attributes;
         this.uniforms = uniforms;
+        this.vao = vao
     }
 
     nextEpoch() {
         let gl = this.gl
         gl.useProgram(this.program)
+        gl.bindVertexArray(this.vao)
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb_new)
         gl.bindFramebuffer(gl.FRAMEBUFFER, null)
         gl.activeTexture(gl.TEXTURE0)
@@ -147,7 +150,7 @@ class GameOfLife {
     }
 
     render() {
-        //simple pass-thru shader
+
     }
 }
 
@@ -186,43 +189,16 @@ void main() {
 }
 `
 
-class SimpleTextureRendererProgram {
+
+
+class SimpleTextureRenderer {
     /**
-     * 
+     *
      * @param {WebGLRenderingContext} gl
      */
     constructor(gl) {
-
-    }
-
-
-    get vertex_source() {
-        return `#version 300 es
-in vec2 pos;
-in vec2 texCoord;
-out vec2 v_texCoord;
-
-void main() {
-    gl_Position = pos;
-    v_texCoord = texCoord;
-}`
-    }
-    get fragment_source() {
-        return `#version 300 es
-in vec2 pos;
-in vec2 texCoord;
-out vec2 v_texCoord;
-
-void main() {
-  gl_Position = pos;
-  v_texCoord = texCoord;
-}`
-    }
-}
-
-const vertex_shader_direct_source =
-    `#version 300 es
-in vec2 pos;
+        let vs_s = `#version 300 es
+in vec2 coord;
 in vec2 texCoord;
 out vec2 v_texCoord;
 
@@ -231,15 +207,26 @@ void main() {
   v_texCoord = texCoord;
 }
 `
-
-const fragment_shader_direct_source =
-    `#version 300 es
-
-uniform sampler2D field;
+        let fs_s = `#version 300 es
+uniform sampler2D tex;
 in vec2 v_texCoord;
 out vec4 outColor;
 
 void main() {
-   outColor = vec4(tex2D(),1);
+   outColor = texture2D(tex,v_texCoord);
 }
 `
+        let program = this.program = CreateSimpleProgram(gl, vs_s, fs_s)
+        let vao = this.vao = gl.createVertexArray()
+        gl.bindVertexArray(vao)
+        coord = gl.getAttribLocation(this.program, 'coord')
+        let pos = gl.createBuffer()
+    }
+
+}
+
+const vertex_shader_direct_source =
+ 
+
+const fragment_shader_direct_source =
+ 
