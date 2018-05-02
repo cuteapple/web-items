@@ -54,7 +54,8 @@ class GameOfLife {
             pos: gl.getAttribLocation(program, 'pos')
         }
         let uniforms = {
-            field: gl.getUniformLocation(program, 'field')
+            field: gl.getUniformLocation(program, 'field'),
+            transition: gl.getUniformLocation(program, 'transition')
         }
 
         ///
@@ -71,6 +72,31 @@ class GameOfLife {
 
         gl.enableVertexAttribArray(attributes.pos)
         gl.vertexAttribPointer(attributes.pos, 2, gl.FLOAT, false, 0, 0)
+
+        ///
+        /// transition table
+        ///
+
+        let transition_table = gl.createTexture()
+        gl.bindTexture(gl.TEXTURE_2D, transition_table)
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 2, 9, 0, gl.RED, gl.UNSIGNED_BYTE,
+            new Uint8Array([
+                0, 0,
+                0, 0,
+                0, 255,
+                255, 255,
+                0, 0,
+                0, 0,
+                0, 0,
+                0, 0,
+                0, 0
+            ])
+        )
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
         ///
         /// field (with random data)
@@ -115,12 +141,16 @@ class GameOfLife {
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb_old)
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, field, 0)
 
+        
         this.gl = gl
+        this.program = program
+
         this.field = field
         this.new_field = new_field
-        this.program = program
         this.fb_new = fb_new
         this.fb_old = fb_old
+        this.transition_table = transition_table
+
         this.attributes = attributes;
         this.uniforms = uniforms;
         this.vao = vao
@@ -132,13 +162,17 @@ class GameOfLife {
         let gl = this.gl
         gl.useProgram(this.program)
         gl.bindVertexArray(this.vao)
-        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_new)
+
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.field)
         gl.uniform1i(this.uniforms.field, 0)
 
+        gl.activeTexture(gl.TEXTURE1)
+        gl.bindTexture(gl.TEXTURE_2D, this.transition_table)
+        gl.uniform1i(this.uniforms.transition, 1)
+
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_new)
         gl.viewport(0, 0, this.width, this.height)
-        //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
         gl.clearColor(0, 0, 0, 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
@@ -197,7 +231,7 @@ class GameOfLife {
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.field)
         gl.uniform1i(u_field, 0)
-        
+
         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null)
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
         gl.clearColor(0, 0, 0, 1)
@@ -220,13 +254,15 @@ const fragment_shader_source =
     `#version 300 es
 
 precision mediump float;
+precision mediump int;
 
 uniform sampler2D field;
+uniform sampler2D transition; /*(current state, surrounding active) => next state */
 out vec4 outColor;
 
 void main() {
     ivec2 coord = ivec2(floor(gl_FragCoord.xy));
-    float state = 
+    int state = int(round(
         texelFetch(field,coord+ivec2(-1,-1),0).r
         +texelFetch(field,coord+ivec2(-1,0),0).r
         +texelFetch(field,coord+ivec2(-1,1),0).r
@@ -234,10 +270,14 @@ void main() {
         +texelFetch(field,coord+ivec2(0,1),0).r
         +texelFetch(field,coord+ivec2(1,-1),0).r
         +texelFetch(field,coord+ivec2(1,0),0).r
-        +texelFetch(field,coord+ivec2(1,1),0).r;
+        +texelFetch(field,coord+ivec2(1,1),0).r
+    ));
 
-    outColor = vec4(state/8.0f,0,0,1);
-    /*outColor = vec4(0,1,0,1);*/
+    int this_state = int(round(texelFetch(field,coord,0).r));
+    float next_state = texelFetch(transition, ivec2(this_state,state),0).r;
+    //next_state = 0.0f;
+    //next_state = float(state)/8.0f;
+    outColor = vec4(next_state,0,0,1);
 }
 `
 
