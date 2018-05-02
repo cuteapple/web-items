@@ -74,6 +74,31 @@ class GameOfLife {
         gl.vertexAttribPointer(attributes.pos, 2, gl.FLOAT, false, 0, 0)
 
         ///
+        /// transition table
+        ///
+
+        let transition_table = gl.createTexture()
+        gl.bindTexture(gl.TEXTURE_2D, transition_table)
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 2, 9, 0, gl.RED, gl.UNSIGNED_BYTE,
+            new Uint8Array([
+                0, 0,
+                0, 0,
+                0, 255,
+                255, 255,
+                0, 0,
+                0, 0,
+                0, 0,
+                0, 0,
+                0, 0
+            ])
+        )
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+        ///
         /// field (with random data)
         ///
 
@@ -116,31 +141,7 @@ class GameOfLife {
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb_old)
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, field, 0)
 
-        ///
-        /// transition table
-        ///
-        let transition_table = gl.createTexture()
-        gl.bindTexture(gl.TEXTURE_2D, new_field)
-        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 2, 9, 0, gl.RED, gl.UNSIGNED_BYTE,
-            new Uint8Array([
-                0, 0,
-                0, 0,
-                0, 255,
-                255, 255,
-                0, 0,
-                0, 0,
-                0, 0,
-                0, 0,
-                0, 0
-            ])
-        )
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-
-
+        
         this.gl = gl
         this.program = program
 
@@ -166,9 +167,9 @@ class GameOfLife {
         gl.bindTexture(gl.TEXTURE_2D, this.field)
         gl.uniform1i(this.uniforms.field, 0)
 
-        //gl.activeTexture(gl.TEXTURE1)
-        //gl.bindTexture(gl.TEXTURE_2D, this.transition_table)
-        //gl.uniform1i(this.uniforms.transition, 1)
+        gl.activeTexture(gl.TEXTURE1)
+        gl.bindTexture(gl.TEXTURE_2D, this.transition_table)
+        gl.uniform1i(this.uniforms.transition, 1)
 
         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.fb_new)
         gl.viewport(0, 0, this.width, this.height)
@@ -183,8 +184,6 @@ class GameOfLife {
 
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-        gl.activeTexture(gl.TEXTURE1)
-        gl.bindTexture(gl.TEXTURE_2D, null)
     }
 
     initRenderProgram() {
@@ -276,7 +275,8 @@ void main() {
 
     int this_state = int(round(texelFetch(field,coord,0).r));
     float next_state = texelFetch(transition, ivec2(this_state,state),0).r;
-    next_state = 0.0f;
+    //next_state = 0.0f;
+    //next_state = float(state)/8.0f;
     outColor = vec4(next_state,0,0,1);
 }
 `
