@@ -4,11 +4,6 @@
 
 body {
     margin: 0;
-    display: grid;
-    width: 100vw;
-    height: 100vh;
-    grid-template-columns: 1fr 80vmin 1fr;
-    grid-template-rows: 1fr 80vmin 1fr;
 }
 
     body > * {
@@ -16,17 +11,6 @@ body {
         height: 100%;
         overflow: hidden;
     }
-
-#playground {
-    grid-column: 2;
-    grid-row: 2;
-}
-
-#playground {
-    display: block;
-    background-color: lightskyblue;
-    border: 3px solid #878feb;
-}
 
 canvas {
     image-rendering: optimizeSpeed;             /* Older versions of FF          */
