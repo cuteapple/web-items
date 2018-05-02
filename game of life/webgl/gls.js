@@ -190,43 +190,27 @@ void main() {
 `
 
 
-
-class SimpleTextureRenderer {
-    /**
-     *
-     * @param {WebGLRenderingContext} gl
-     */
-    constructor(gl) {
-        let vs_s = `#version 300 es
-in vec2 coord;
+const render_vertex_shader_source =
+    `#version 300 es
+in vec2 pos;
 in vec2 texCoord;
 out vec2 v_texCoord;
 
 void main() {
-  gl_Position = pos;
-  v_texCoord = texCoord;
+  gl_Position = vec4(pos,0,1);
 }
 `
-        let fs_s = `#version 300 es
-uniform sampler2D tex;
+//or multi target render?
+const render_fragment_shader_source =
+    `#version 300 es
+
+precision mediump float;
+uniform sampler2D field;
 in vec2 v_texCoord;
 out vec4 outColor;
 
 void main() {
-   outColor = texture2D(tex,v_texCoord);
+    float state = texture2D(field, v_texCoord);
+    outColor = vec4(state,state,state,1) /*as grayscale*/
 }
 `
-        let program = this.program = CreateSimpleProgram(gl, vs_s, fs_s)
-        let vao = this.vao = gl.createVertexArray()
-        gl.bindVertexArray(vao)
-        coord = gl.getAttribLocation(this.program, 'coord')
-        let pos = gl.createBuffer()
-    }
-
-}
-
-const vertex_shader_direct_source =
- 
-
-const fragment_shader_direct_source =
- 
