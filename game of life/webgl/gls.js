@@ -107,8 +107,8 @@ class GameOfLife {
         gl.bindTexture(gl.TEXTURE_2D, this.field)
         gl.uniform1i(this.uniforms.field,0)
 
-        //gl.viewport(0, 0, this.width, this.height)
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+        gl.viewport(0, 0, this.width, this.height)
+        //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
         gl.clearColor(0, 0, 0, 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
@@ -145,9 +145,17 @@ out vec4 outColor;
 
 void main() {
     ivec2 coord = ivec2(floor(gl_FragCoord.xy));
-    float state = texelFetch(field,coord,0).r;
-    
-    outColor = vec4(state,0,0,1);
+    float state = 
+        texelFetch(field,coord+ivec2(-1,-1),0).r
+        +texelFetch(field,coord+ivec2(-1,0),0).r
+        +texelFetch(field,coord+ivec2(-1,1),0).r
+        +texelFetch(field,coord+ivec2(0,-1),0).r
+        +texelFetch(field,coord+ivec2(0,1),0).r
+        +texelFetch(field,coord+ivec2(1,-1),0).r
+        +texelFetch(field,coord+ivec2(1,0),0).r
+        +texelFetch(field,coord+ivec2(1,1),0).r;
+
+    outColor = vec4(state/8.0f,0,0,1);
     /*outColor = vec4(0,1,0,1);*/
 }
 `
