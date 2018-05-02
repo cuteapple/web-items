@@ -276,7 +276,7 @@ void main() {
     int this_state = int(round(texelFetch(field,coord,0).r));
     float next_state = texelFetch(transition, ivec2(this_state,state),0).r;
     //next_state = 0.0f;
-    next_state = float(state)/8.0f;
+    //next_state = float(state)/8.0f;
     outColor = vec4(next_state,0,0,1);
 }
 `
