@@ -47,9 +47,14 @@ function init() {
  * @param {number} dy
  */
 function TryMove(dx, dy) {
-    activeBlocks
+    if (!activeBlocks
         .map(b => [b.x, b.y])
         .every(p => get_grid(...p))
+    ) { return false }
+
+    //can move
+    activeBlocks.forEach(x => { x.x += dx, x.y += dy })
+    return true
 }
 
 class GridItem {
