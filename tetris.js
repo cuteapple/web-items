@@ -4,7 +4,8 @@ let width = 20
 let height = 50
 
 /**
- * @type {Block[]}
+ * active (moving) blocks
+ * @type {GridItem[]}
  */
 let activeBlocks;
 
@@ -16,6 +17,14 @@ let grids = Array(width).fill().map(x => [])
 
 function outside_grid(x, y) {
     return x < 0 || x >= width || y < 0 || y >= height
+}
+
+function inside_grid(x, y) {
+    return !outside_grid()
+}
+
+function get_grid(x, y) {
+    return inside_grid(x, y) && grids[x][y]
 }
 
 function init() {
@@ -31,6 +40,17 @@ function init() {
     //start game loop
 }
 
+/**
+ * try move activeBlocks by dx, dy
+ * no action if any Block cannot move
+ * @param {number} dx
+ * @param {number} dy
+ */
+function TryMove(dx, dy) {
+    activeBlocks
+        .map(b => [b.x, b.y])
+        .every(p => get_grid(...p))
+}
 
 class GridItem {
     constructor(x, y, parent) {
