@@ -4,12 +4,27 @@ let width = 20
 let height = 50
 
 /**
+ * active (moving) blocks
  * @type {GridItem[]}
  */
-let activeBlock;
+let activeBlocks;
+
+/**
+ * grid of blocks
+ * @type {GridItem[][]}
+ */
+let grids = Array(width).fill().map(x => [])
 
 function outside_grid(x, y) {
     return x < 0 || x >= width || y < 0 || y >= height
+}
+
+function inside_grid(x, y) {
+    return !outside_grid()
+}
+
+function get_grid(x, y) {
+    return inside_grid(x, y) && grids[x][y]
 }
 
 function init() {
@@ -25,24 +40,38 @@ function init() {
     //start game loop
 }
 
-function NewBlock() {
-    
+/**
+ * try move activeBlocks by dx, dy
+ * no action if any Block cannot move
+ * @param {number} dx
+ * @param {number} dy
+ */
+function TryMove(dx, dy) {
+    if (!activeBlocks
+        .map(b => [b.x, b.y])
+        .every(p => get_grid(...p))
+    ) { return false }
+
+    //can move
+    activeBlocks.forEach(x => { x.x += dx, x.y += dy })
+    return true
 }
 
 class GridItem {
-    constructor(x, y) {
+    constructor(x, y, parent) {
         this.element = document.createElement('div')
         this.x = x
         this.y = y
-        playground.appendChild(this.element)
+        this.parent = parent
+        parent.appendChild(this.element)
+    }
+
+    attach() {
+        this.parent.appendChild(this.element)
     }
 
     detech() {
-        playground.removeChild(this.element)
-    }
-
-    blink() {
-        this.element.classList.add('blink')
+        this.parent.removeChild(this.element)
     }
 
     set x(value) { this._x = value; this.element.style.gridColumn = value + 1; }
