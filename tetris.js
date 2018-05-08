@@ -10,9 +10,9 @@ let activeBlocks;
 
 /**
  * grid of blocks
- * @type {Block[][]}
+ * @type {GridItem[][]}
  */
-let passiveBlocks;
+let grids = Array(width).fill().map(x => [])
 
 function outside_grid(x, y) {
     return x < 0 || x >= width || y < 0 || y >= height
@@ -33,19 +33,20 @@ function init() {
 
 
 class GridItem {
-    constructor(x, y) {
+    constructor(x, y, parent) {
         this.element = document.createElement('div')
         this.x = x
         this.y = y
-        playground.appendChild(this.element)
+        this.parent = parent
+        parent.appendChild(this.element)
+    }
+
+    attach() {
+        this.parent.appendChild(this.element)
     }
 
     detech() {
-        playground.removeChild(this.element)
-    }
-
-    blink() {
-        this.element.classList.add('blink')
+        this.parent.removeChild(this.element)
     }
 
     set x(value) { this._x = value; this.element.style.gridColumn = value + 1; }
@@ -54,11 +55,4 @@ class GridItem {
     get y() { return this._y; }
     set pos(p) { this.x = p[0]; this.y = p[1]; }
     get pos() { return [this.x, this.y] }
-}
-
-class Block extends GridItem {
-    constructor(x, y, color) {
-        super(x,y)
-    }
-    TestMove(dx, dy) {}
 }
