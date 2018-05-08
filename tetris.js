@@ -4,9 +4,15 @@ let width = 20
 let height = 50
 
 /**
- * @type {GridItem[]}
+ * @type {Block[]}
  */
-let activeBlock;
+let activeBlocks;
+
+/**
+ * grid of blocks
+ * @type {Block[][]}
+ */
+let passiveBlocks;
 
 function outside_grid(x, y) {
     return x < 0 || x >= width || y < 0 || y >= height
@@ -25,9 +31,6 @@ function init() {
     //start game loop
 }
 
-function NewBlock() {
-    
-}
 
 class GridItem {
     constructor(x, y) {
@@ -51,4 +54,11 @@ class GridItem {
     get y() { return this._y; }
     set pos(p) { this.x = p[0]; this.y = p[1]; }
     get pos() { return [this.x, this.y] }
+}
+
+class Block extends GridItem {
+    constructor(x, y, color) {
+        super(x,y)
+    }
+    TestMove(dx, dy) {}
 }
