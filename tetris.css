@@ -1,0 +1,17 @@
+* {
+    box-sizing: border-box
+}
+
+#playground {
+    margin: auto;
+    width: 80vmin;
+    height: 80vmin;
+}
+
+
+#playground {
+    display: grid;
+    grid-gap: 1px;
+    background-color: black;
+    border: 3px solid black;
+}
