@@ -4,6 +4,11 @@ let width = 20
 let height = 50
 
 function init() {
+    playground = document.getElementById('playground')
+    playground.style.gridTemplateRows = `repeat(${height},1fr)`
+    playground.style.gridTemplateColumns = `repeat(${width},1fr)`
+    //adjust width and height of playground
+
 }
 
 /**
@@ -23,8 +28,6 @@ class Tetris {
         this.generateCenterX = Math.floor(width / 2)
         this.generateCenterY = 1
 
-        div.style.gridTemplateRows = `repeat(${height},1fr)`
-        div.style.gridTemplateColumns = `repeat(${width},1fr)`
 
         /**
          * @type {Block[]}
