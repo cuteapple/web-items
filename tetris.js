@@ -3,47 +3,30 @@ let controller = new controller4()
 let width = 20
 let height = 50
 
-function init() {
-    playground = document.getElementById('playground')
-    playground.style.gridTemplateRows = `repeat(${height},1fr)`
-    playground.style.gridTemplateColumns = `repeat(${width},1fr)`
-    //adjust width and height of playground
+/**
+ * @type {GridItem[]}
+ */
+let activeBlock;
 
+function outside_grid(x, y) {
+    return x < 0 || x >= width || y < 0 || y >= height
 }
 
-/**
- * grid-layout based Tetris playround
- */
-class Tetris {
-    /**
-     * create grid-layout based Tetris playground
-     * @param {HTMLDivElement} div
-     * @param {Number} width
-     * @param {Number} height
-     */
-    constructor(div, width, height) {
-        this.div = div
-        this.width = width
-        this.height = height
-        this.generateCenterX = Math.floor(width / 2)
-        this.generateCenterY = 1
+function init() {
+    playground = document.getElementById('playground')
 
+    //set up grid
+    playground.style.gridTemplateRows = `repeat(${height},1fr)`
+    playground.style.gridTemplateColumns = `repeat(${width},1fr)`
 
-        /**
-         * @type {Block[]}
-         */
-        this.current = undefined
-    }
+    //adjust width and height of playground
+    //...
 
-    newBlock() {}
+    //start game loop
+}
 
-    /**
-     * @returns {boolean}
-     */
-    moveLeft() { }
-    moveRight() { }
-    moveDown() { }
-    rotate() {}
+function NewBlock() {
+    
 }
 
 class GridItem {
