@@ -1,12 +1,11 @@
 /**
+ * @typedef {'left'|'right'|'up'|'down'|'all'} event_names
+ */
+
+/**
  * 4-way (up,left,down,right) controller
  */
 class controller4 {
-    /**
-     * @typedef {'left'|'right'|'up'|'down'} event_names
-     */ 
-
-
     /**
      * initilize controller with optionally event handler
      * @param {(event_name:'left')=>void} left callback for left event
@@ -18,7 +17,8 @@ class controller4 {
     constructor(left, right, up, down, all) {
         document.addEventListener('keydown', (ev) => this.handlekey(ev.key))
 
-        let noop = () => { /*console.log('no handler')*/ }
+        let noop = () => {/*console.log('no handler')*/ }
+
 
         this.left = left || noop
         this.right = right || noop
@@ -27,18 +27,18 @@ class controller4 {
         this.all = all || noop
     }
     /**
-     * 
+     * replace existed handler
      * @param {event_names} event
      * @param {(event_name:event_names)=>void} handler
      */
-    addEventListener(ev, handler) {
-        this[ev] = handler
+    replaceEventListener(event, handler) {
+        this[event] = handler
     }
 
     /**
      * detach all handler
      */
-    detach() {
+    detach_all() {
         this.left = this.right = this.up = this.down = this.all = () => {/* console.log('no handler')*/ }
     }
 
@@ -67,6 +67,13 @@ class controller4 {
             case 'up': return [0, up]
             case 'down': return [0, -up]
         }
+    }
+
+    /**
+     * a no-op handler
+     */
+    static default_handler() {
+        
     }
 }
 
