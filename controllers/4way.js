@@ -1,13 +1,40 @@
+/**
+ * 4-way (up,left,down,right) controller
+ */
 class controller4 {
-    constructor() {
+    /**
+     * 
+     * @param {()=>void} left callback for left event
+     * @param {()=>void} right callback for right event
+     * @param {()=>void} up callback for up event
+     * @param {()=>void} down callback for down event
+     * @param {(event_name:'up'|'down'|'left'|'right')=>void} all callback for any previous events, with parameter event_name equal to the event name
+     */
+    constructor(left,right,up,down,all) {
         document.addEventListener('keydown', (ev) => this.handlekey(ev.key))
-        // may update some day
+
+        let handlers = { left, right, up, down, all }
+        for (let x of Object.keys(handlers)) {
+
+        }
+        // empty event handler
         this.left = this.right = this.up = this.down = this.all = () => {/* console.log('no handler')*/ }
     }
 
     // may update some day
     addEventListener(ev, handler) {
         this[ev] = handler
+    }
+
+    /**
+     * stop from receive event, but keep all handler
+     */
+    detach() {
+        this.left = this.right = this.up = this.down = this.all = () => {/* console.log('no handler')*/ }
+    }
+
+    attach() {
+        document.addEventListener('keydown', (ev) => this.handlekey(ev.key))
     }
 
     handlekey(key) {
