@@ -3,7 +3,7 @@ let controller = new controller4()
 let width = 20
 let height = 50
 /** micro seconds to fall down one block */
-let fall_interval = 1000
+let fall_interval = 300
 let fall_timer
 
 /**
@@ -49,17 +49,23 @@ function init() {
     controller.up = () => TryRotate()
     controller.right = () => TryMove(1, 0)
     controller.down = () => Down()
-    fall_timer = setInterval(MoveDownOrNew, fall_interval)
+    fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
+    activeBlocks = GenerateBlocks(RandomTetris(), Math.floor(width / 2 - 1), 0)
 }
 
-function MoveDownOrNew() {
-
+function MoveDownOrNewOrEnd() {
+    let success = TryMove(0, 1)
+    if (!success) {
+        if (activeBlocks.find(x => x.y < 1)) {
+            End()
+            return
+        }
+        activeBlocks.forEach(x => set_grid(x.x, x.y, x))
+        activeBlocks = GenerateBlocks(RandomTetris(), Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
+    }
 }
 
-function AutoFall() {
-    MoveDownOrNew()
-    (AutoFall, fall_interval)
-}
+function End() { }
 
 function TryRotate() { console.warn('not impl') }
 function Down() { console.warn('not impl') }
@@ -113,7 +119,7 @@ function randomColorString() {
 
 /**
  * generate blocks onto *x* and *y*, regardless of existed blocks
- * @param {tetris_template} template
+ * @param {tetris_template} template template for new blocks
  * @param {number} x upperleft-x 
  * @param {number} y upperleft-y
  * @param {string} color css color string or false value for random color
@@ -138,4 +144,8 @@ const tetris_blocks = {
     'T': [[0, 0], [1, 0], [2, 0], [1, 1]],
     'O': [[0, 0], [0, 1], [1, 0], [1, 1]],
     'I': [[0, 0], [0, 1], [0, 2], [0, 3]],
+}
+
+function RandomTetris() {
+    return tetris_blocks['LTOI'[Math.floor(Math.random() * 4)]]
 }
