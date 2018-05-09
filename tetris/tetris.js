@@ -6,7 +6,6 @@ let height = 50
 let fall_interval = 300
 let fall_timer
 
-
 let scwidth = window.innerWidth
     || document.documentElement.clientWidth
     || document.body.clientWidth;
@@ -59,7 +58,7 @@ function init() {
     let sw = scwidth / width //pixel width per unit
     let sh = scheight / height //pixel height per unit
 
-    let s = Math.floor(Math.min(sw, sh) * 0.8)
+    let s = Math.floor(Math.min(sw, sh) * 0.9)
     playground.style.width = `${s * width}px`
     playground.style.height = `${s * height}px`
 
