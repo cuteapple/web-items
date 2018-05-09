@@ -4,18 +4,22 @@
 class controller4 {
     /**
      * initilize controller with optionally event handler
-     * @param {Obejct} o
-     * @param {(event_name:'left')=>void} o.left callback for left event
-     * @param {(event_name:'right')=>void} o.right callback for right event
-     * @param {(event_name:'up')=>void} o.up callback for up event
-     * @param {(event_name:'down')=>void} o.down callback for down event
-     * @param {(event_name:'up'|'down'|'left'|'right')=>void} o.all callback for any previous events, with parameter event_name equal to the event name
+     * @param {(event_name:'left')=>void} left callback for left event
+     * @param {(event_name:'right')=>void} right callback for right event
+     * @param {(event_name:'up')=>void} up callback for up event
+     * @param {(event_name:'down')=>void} down callback for down event
+     * @param {(event_name:'up'|'down'|'left'|'right')=>void} all callback for any previous events, with parameter event_name equal to the event name
      */
     constructor(left, right, up, down, all) {
         document.addEventListener('keydown', (ev) => this.handlekey(ev.key))
-        
-        // empty event handler
-        this.left = this.right = this.up = this.down = this.all = () => {/* console.log('no handler')*/ }
+
+        let noop = () => { /*console.log('no handler')*/ }
+
+        this.left = left || noop
+        this.right = right || noop
+        this.up = up || noop
+        this.down = down || noop
+        this.all = all || noop
     }
 
     /**
