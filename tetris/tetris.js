@@ -89,7 +89,6 @@ class GridItem {
 }
 
 function randomColorString() {
-    return `hsl(${Math.floor(Math.random()*360)}, 100%, 50%)`
 }
 
 /**
@@ -101,7 +100,7 @@ function randomColorString() {
  */
 function GenerateBlocks(template, x, y) {
     let blocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, playground))
-    //blocks.forEach(b => b.element.style.backgroundColor = )
+    blocks.forEach(b => b.element.style.backgroundColor = `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`)
     return blocks
 }
 
