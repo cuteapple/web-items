@@ -71,7 +71,24 @@ function End() {
     controller.detech_all()
 }
 
-function TryRotate() { console.warn('not impl') }
+function TryRotate() {
+    let xs = activeBlocks.map(x => x.x)
+    let ys = activeBlocks.map(x => x.y)
+    let cx = Math.floor(xs.reduce((a, b) => a + b) / xs.length)
+    let cy = Math.floor(ys.reduce((a, b) => a + b) / ys.length)
+    let deltas = activeBlocks.map(x => ({ dx: x.x - cx, dy: x.y - cy }))
+    let new_pos = deltas.map(p => [Math.floor(cx + p[0]), Math.floor(cy - p[0]) )
+
+    for (let block of activeBlocks) {
+        let dx = block.x - cx
+        let dy = block.y - cy
+        let x = Math.floor(cx + dy)
+        let y = Math.floor(cy - dx)
+    }
+
+
+    console.warn('not impl')
+}
 
 let down = false;
 function Down() {
@@ -135,8 +152,6 @@ class GridItem {
     get pos() { return [this.x, this.y] }
 }
 
-function randomColorString() {
-}
 
 /**
  * generate blocks onto *x* and *y*, regardless of existed blocks
