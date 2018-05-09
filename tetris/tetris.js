@@ -3,7 +3,8 @@ let controller = new controller4()
 let width = 20
 let height = 50
 /** micro seconds to fall down one block */
-let fall_interval = 100
+let fall_interval = 1000
+let fall_timer
 
 /**
  * active (moving) blocks
@@ -48,6 +49,16 @@ function init() {
     controller.up = () => TryRotate()
     controller.right = () => TryMove(1, 0)
     controller.down = () => Down()
+    fall_timer = setInterval(MoveDownOrNew, fall_interval)
+}
+
+function MoveDownOrNew() {
+
+}
+
+function AutoFall() {
+    MoveDownOrNew()
+    (AutoFall, fall_interval)
 }
 
 function TryRotate() { console.warn('not impl') }
