@@ -96,11 +96,14 @@ function randomColorString() {
  * @param {tetris_template} template
  * @param {number} x upperleft-x 
  * @param {number} y upperleft-y
+ * @param {string} color css color string or false value for random color
  * @returns {GridItem[]}
  */
-function GenerateBlocks(template, x, y) {
+function GenerateBlocks(template, x, y, color) {
+    color = color || `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
+
     let blocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, playground))
-    blocks.forEach(b => b.element.style.backgroundColor = `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`)
+    blocks.forEach(b => b.element.style.backgroundColor = color)
     return blocks
 }
 
