@@ -1,20 +1,45 @@
-//because animation of border takes too much (unnecessary) CPU (resource)
-(function border_animation() {
-    let playground = document.getElementById('playground')
-    let duration = 10; //sec
-    let fps = 30; //much lower than css (can I constraint on css?)
 
-    let delta = 360 / (duration * fps)
-    let interval = Math.round(1000 / fps)
-    let color = 0
+/**
+ * 
+ * @param {HTMLElement} playground target
+ * @param {number} width number of columns in playground
+ * @param {number} height number of rows in playground
+ */
+function apply_cssjs(playground, width, height){
+    const scwidth = window.innerWidth
+        || document.documentElement.clientWidth
+        || document.body.clientWidth;
 
-    function animation() {
-        color += delta
-        if (color >= 360) color -= 360
-        let icolor = Math.floor(color)
-        playground.style.borderColor = `hsl(${icolor},100%,50%)`
+    const scheight = window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
+
+    //border_animation
+    //since css animation takes too much CPU
+    {
+        let duration = 10; //sec
+        let fps = 30; //much lower than css (can I constraint on css?)
+
+        let delta = 360 / (duration * fps)
+        let interval = Math.round(1000 / fps)
+        let color = 0
+
+        setInterval(function border_animation() {
+            color += delta
+            if (color >= 360) color -= 360
+            let icolor = Math.floor(color)
+            playground.style.borderColor = `hsl(${icolor},100%,50%)`
+        }, interval)
     }
 
-    setInterval(animation, interval)
+    //playground size
+    {
+        //adjust width and height of playground
+        let sw = scwidth / width //pixel width per unit
+        let sh = scheight / height //pixel height per unit
 
-})()
+        let s = Math.floor(Math.min(sw, sh) * 0.9)
+        playground.style.width = `${s * width}px`
+        playground.style.height = `${s * height}px`
+    }
+}

@@ -3,9 +3,8 @@
 }
 
 html {
-
+    background-color:black;
 }
-
 
 #playground {
     box-sizing:content-box;

@@ -6,14 +6,6 @@ let height = 50
 let fall_interval = 300
 let fall_timer
 
-let scwidth = window.innerWidth
-    || document.documentElement.clientWidth
-    || document.body.clientWidth;
-
-let scheight = window.innerHeight
-    || document.documentElement.clientHeight
-    || document.body.clientHeight;
-
 /**
  * active (moving) blocks
  * @type {GridItem[]}
@@ -48,19 +40,13 @@ function set_grid(x, y, block) {
 }
 
 function init() {
+
     playground = document.getElementById('playground')
+    apply_cssjs(playground, width, height)
 
     //set up grid
     playground.style.gridTemplateRows = `repeat(${height},1fr)`
     playground.style.gridTemplateColumns = `repeat(${width},1fr)`
-
-    //adjust width and height of playground
-    let sw = scwidth / width //pixel width per unit
-    let sh = scheight / height //pixel height per unit
-
-    let s = Math.floor(Math.min(sw, sh) * 0.9)
-    playground.style.width = `${s * width}px`
-    playground.style.height = `${s * height}px`
 
     //start game loop
     controller.left = () => TryMove(-1, 0)
