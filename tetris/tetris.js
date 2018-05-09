@@ -11,9 +11,9 @@ let activeBlocks;
 
 /**
  * grid of blocks
- * @type {GridItem[][]}
+ * @type {GridItem[]}
  */
-let grids = Array(width).fill().map(x => [])
+let grids = []
 
 function outside_grid(x, y) {
     return x < 0 || x >= width || y < 0 || y >= height
@@ -24,7 +24,7 @@ function inside_grid(x, y) {
 }
 
 function get_grid(x, y) {
-    return inside_grid(x, y) && grids[x][y]
+    return inside_grid(x, y) && grids[x + y * width]
 }
 
 function init() {
