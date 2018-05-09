@@ -3,12 +3,17 @@
  */
 class controller4 {
     /**
+     * @typedef {'left'|'right'|'up'|'down'} event_names
+     */ 
+
+
+    /**
      * initilize controller with optionally event handler
      * @param {(event_name:'left')=>void} left callback for left event
      * @param {(event_name:'right')=>void} right callback for right event
      * @param {(event_name:'up')=>void} up callback for up event
      * @param {(event_name:'down')=>void} down callback for down event
-     * @param {(event_name:'up'|'down'|'left'|'right')=>void} all callback for any previous events, with parameter event_name equal to the event name
+     * @param {(event_name:event_names)=>void} all callback for any previous events, with parameter event_name equal to the event name
      */
     constructor(left, right, up, down, all) {
         document.addEventListener('keydown', (ev) => this.handlekey(ev.key))
@@ -21,11 +26,10 @@ class controller4 {
         this.down = down || noop
         this.all = all || noop
     }
-
     /**
      * 
-     * @param {'up'|'down'|'left'|'right'|'all'} ev
-     * @param {any} handler
+     * @param {event_names} event
+     * @param {(event_name:event_names)=>void} handler
      */
     addEventListener(ev, handler) {
         this[ev] = handler
