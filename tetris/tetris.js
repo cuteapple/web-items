@@ -11,9 +11,9 @@ let activeBlocks;
 
 /**
  * grid of blocks
- * @type {GridItem[][]}
+ * @type {GridItem[]}
  */
-let grids = Array(width).fill().map(x => [])
+let grids = []
 
 function outside_grid(x, y) {
     return x < 0 || x >= width || y < 0 || y >= height
@@ -24,7 +24,11 @@ function inside_grid(x, y) {
 }
 
 function get_grid(x, y) {
-    return inside_grid(x, y) && grids[x][y]
+    return inside_grid(x, y) && grids[x + y * width]
+}
+
+function set_grid(x, y, block) {
+    return inside_grid(x, y) && (grids[x + y * width] = block)
 }
 
 function init() {
@@ -47,12 +51,14 @@ function init() {
  * @param {number} dy
  */
 function TryMove(dx, dy) {
-    if (!activeBlocks
-        .map(b => [b.x, b.y])
-        .every(p => get_grid(...p))
+
+    // check for overlap after move
+    if (activeBlocks
+        .map(b => [b.x + dx, b.y + dy])
+        .find(p => get_grid(...p))
     ) { return false }
 
-    //can move
+    //no overlap, move
     activeBlocks.forEach(x => { x.x += dx, x.y += dy })
     return true
 }
@@ -80,4 +86,36 @@ class GridItem {
     get y() { return this._y; }
     set pos(p) { this.x = p[0]; this.y = p[1]; }
     get pos() { return [this.x, this.y] }
+}
+
+function randomColorString() {
+}
+
+/**
+ * generate blocks onto *x* and *y*, regardless of existed blocks
+ * @param {tetris_template} template
+ * @param {number} x upperleft-x 
+ * @param {number} y upperleft-y
+ * @param {string} color css color string or false value for random color
+ * @returns {GridItem[]}
+ */
+function GenerateBlocks(template, x, y, color) {
+    color = color || `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
+
+    let blocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, playground))
+    blocks.forEach(b => b.element.style.backgroundColor = color)
+    return blocks
+}
+
+/** @typedef {number[][]} tetris_template */
+
+/**
+ * template of tetris
+ * @enum {tetris_template}
+ */
+const tetris_blocks = {
+    'L': [[0, 0], [0, 1], [0, 2], [1, 2]],
+    'T': [[0, 0], [1, 0], [2, 0], [1, 1]],
+    'O': [[0, 0], [0, 1], [1, 0], [1, 1]],
+    'I': [[0, 0], [0, 1], [0, 2], [0, 3]],
 }
