@@ -15,10 +15,9 @@ class controller4 {
      * @param {(event_name:event_names)=>void} all callback for any previous events, with parameter event_name equal to the event name
      */
     constructor(left, right, up, down, all) {
-        document.addEventListener('keydown', (ev) => this.handlekey(ev.key))
+        document.addEventListener('keydown', (event)=>this.handlekey(event.key))
 
-        let noop = () => {/*console.log('no handler')*/ }
-
+        let noop = this.noop = () => { /*console.log('no handler')*/ }
 
         this.left = left || noop
         this.right = right || noop
@@ -31,7 +30,7 @@ class controller4 {
      * @param {event_names} event
      * @param {(event_name:event_names)=>void} handler
      */
-    replaceEventListener(event, handler) {
+    replaceHandler(event, handler) {
         this[event] = handler
     }
 
@@ -39,13 +38,9 @@ class controller4 {
      * detach all handler
      */
     detach_all() {
-        this.left = this.right = this.up = this.down = this.all = () => {/* console.log('no handler')*/ }
+        this.left = this.right = this.up = this.down = this.all = this.noop
     }
-
-    attach() {
-        document.addEventListener('keydown', (ev) => this.handlekey(ev.key))
-    }
-
+    
     handlekey(key) {
         let handler;
         switch (key) {
@@ -54,7 +49,6 @@ class controller4 {
             case "ArrowUp": handler = 'up'; break;
             case "ArrowDown": handler = 'down'; break;
             default: return; // do nothing
-
         }
         this[handler](handler)
         this.all(handler)
@@ -67,13 +61,6 @@ class controller4 {
             case 'up': return [0, up]
             case 'down': return [0, -up]
         }
-    }
-
-    /**
-     * a no-op handler
-     */
-    static default_handler() {
-        
     }
 }
 
