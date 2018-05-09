@@ -1,16 +1,17 @@
 * {
-    box-sizing: border-box
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
 }
 
 html {
-    background-color:black;
+    background-color: black;
 }
 
 #playground {
-    box-sizing:content-box;
     margin: auto;
     /*width: 80vmin;
-    height: 80vmin;*/ /*control by tetris.js*/
+    height: 80vmin;*/ /*control by css.js*/
 }
 
 
@@ -25,31 +26,37 @@ html {
 
 @keyframes border-hsl-ring {
     0% {
-        border-color:hsl(0, 100%, 50%)
+        border-color: hsl(0, 100%, 50%)
     }
+
     16% {
         border-color: hsl(60, 100%, 50%)
     }
+
     33% {
         border-color: hsl(120, 100%, 50%)
     }
+
     50% {
         border-color: hsl(180, 100%, 50%)
     }
+
     66% {
         border-color: hsl(240, 100%, 50%)
     }
+
     83% {
         border-color: hsl(300, 100%, 50%)
     }
+
     100% {
         border-color: hsl(360, 100%, 50%)
     }
 }
 
 .anchor {
-    display:none;/*do not show anchor*/
-    z-index:1;
-    background-color:white;
-    border-radius:50% 50%;
+    display: none; /*do not show anchor*/
+    z-index: 1;
+    background-color: white;
+    border-radius: 50% 50%;
 }

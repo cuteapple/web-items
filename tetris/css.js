@@ -5,20 +5,13 @@
  * @param {number} width number of columns in playground
  * @param {number} height number of rows in playground
  */
-function apply_cssjs(playground, width, height){
-    const scwidth = window.innerWidth
-        || document.documentElement.clientWidth
-        || document.body.clientWidth;
-
-    const scheight = window.innerHeight
-        || document.documentElement.clientHeight
-        || document.body.clientHeight;
+function apply_cssjs(playground, width, height) {
 
     //border_animation
     //since css animation takes too much CPU
     {
-        let duration = 10; //sec
-        let fps = 30; //much lower than css (can I constraint on css?)
+        const duration = 10; //sec
+        const fps = 30; //much lower than css (can I constraint on css?)
 
         let delta = 360 / (duration * fps)
         let interval = Math.round(1000 / fps)
@@ -34,12 +27,22 @@ function apply_cssjs(playground, width, height){
 
     //playground size
     {
+        const max_ratio = 1.0
+
+        const scwidth = window.innerWidth
+            || document.documentElement.clientWidth
+            || document.body.clientWidth;
+
+        const scheight = window.innerHeight
+            || document.documentElement.clientHeight
+            || document.body.clientHeight;
+
         //adjust width and height of playground
         let sw = scwidth / width //pixel width per unit
         let sh = scheight / height //pixel height per unit
 
-        let s = Math.floor(Math.min(sw, sh) * 0.9)
-        playground.style.width = `${s * width}px`
-        playground.style.height = `${s * height}px`
+        let s = Math.min(sw, sh) * max_ratio
+        playground.style.width = `${Math.floor(s * width)}px`
+        playground.style.height = `${Math.floor(s * height)}px`
     }
 }
