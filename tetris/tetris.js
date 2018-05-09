@@ -76,18 +76,17 @@ function TryRotate() {
     let ys = activeBlocks.map(x => x.y)
     let cx = Math.floor(xs.reduce((a, b) => a + b) / xs.length)
     let cy = Math.floor(ys.reduce((a, b) => a + b) / ys.length)
-    let deltas = activeBlocks.map(x => ({ dx: x.x - cx, dy: x.y - cy }))
-    let new_pos = deltas.map(p => [Math.floor(cx + p[0]), Math.floor(cy - p[0]) )
+    let deltas = activeBlocks.map(x => [x.x - cx, x.y - cy])
+    deltas = deltas.map(([dx, dy]) => [dy, - dx])
+    let new_pos = deltas.map(([dx, dy]) => [cx + dx, cy + dy])
 
-    for (let block of activeBlocks) {
-        let dx = block.x - cx
-        let dy = block.y - cy
-        let x = Math.floor(cx + dy)
-        let y = Math.floor(cy - dx)
+    if (!new_pos.every(p => inside_grid(...p) && !get_grid(...p)))
+        return false
+
+    for (let i = 0; i < activeBlocks.length; ++i) {
+        activeBlocks[i].pos = new_pos[i]
     }
-
-
-    console.warn('not impl')
+    return true
 }
 
 let down = false;
