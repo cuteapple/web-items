@@ -11,6 +11,11 @@ let fall_timer
  * @type {GridItem[]}
  */
 let activeBlocks;
+/**
+ * anchor (rotation center) of blocks
+ * @type {GridItem}
+ */
+let activeBlocks_anchor
 
 /**
  * grid of blocks
@@ -50,7 +55,10 @@ function init() {
     controller.right = () => TryMove(1, 0)
     controller.down = () => Down()
     fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
-    activeBlocks = GenerateBlocks(RandomTetris(), Math.floor(width / 2 - 1), 0)
+
+    activeBlocks_anchor = new GridItem(0, 0, playground)
+    activeBlocks_anchor.element.classList.add('anchor')
+    GenerateBlocks(RandomTetris(), Math.floor(width / 2 - 1), 0)
 }
 
 function MoveDownOrNewOrEnd() {
@@ -62,20 +70,17 @@ function MoveDownOrNewOrEnd() {
         return false
     }
     activeBlocks.forEach(x => set_grid(x.x, x.y, x))
-    activeBlocks = GenerateBlocks(RandomTetris(), Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
+    GenerateBlocks(RandomTetris(), Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
     return false
 }
 
 function End() {
     clearInterval(fall_timer)
-    controller.detech_all()
+    controller.detach_all()
 }
 
 function TryRotate() {
-    let xs = activeBlocks.map(x => x.x)
-    let ys = activeBlocks.map(x => x.y)
-    let cx = Math.floor(xs.reduce((a, b) => a + b) / xs.length)
-    let cy = Math.floor(ys.reduce((a, b) => a + b) / ys.length)
+    let [cx, cy] = activeBlocks_anchor.pos
     let deltas = activeBlocks.map(x => [x.x - cx, x.y - cy])
     deltas = deltas.map(([dx, dy]) => [dy, - dx])
     let new_pos = deltas.map(([dx, dy]) => [cx + dx, cy + dy])
@@ -123,6 +128,8 @@ function TryMove(dx, dy) {
 
     //no overlap, move
     activeBlocks.forEach(x => { x.x += dx, x.y += dy })
+    activeBlocks_anchor.x += dx;
+    activeBlocks_anchor.y += dy;
     return true
 }
 
@@ -158,14 +165,13 @@ class GridItem {
  * @param {number} x upperleft-x 
  * @param {number} y upperleft-y
  * @param {string} color css color string or false value for random color
- * @returns {GridItem[]}
  */
 function GenerateBlocks(template, x, y, color) {
     color = color || `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
 
-    let blocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, playground))
-    blocks.forEach(b => b.element.style.backgroundColor = color)
-    return blocks
+    activeBlocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, playground))
+    activeBlocks.forEach(b => b.element.style.backgroundColor = color)
+    activeBlocks_anchor.pos = [x, y]
 }
 
 /** @typedef {number[][]} tetris_template */
