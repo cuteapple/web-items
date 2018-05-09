@@ -2,6 +2,10 @@
 let controller = new controller4()
 let width = 20
 let height = 50
+/** micro seconds to fall down one block */
+let fall_interval = 100
+/** only single move is valid inside one interval */
+let move_interval = 33
 
 /**
  * active (moving) blocks
@@ -20,7 +24,7 @@ function outside_grid(x, y) {
 }
 
 function inside_grid(x, y) {
-    return !outside_grid()
+    return !outside_grid(x, y)
 }
 
 function get_grid(x, y) {
@@ -53,9 +57,9 @@ function init() {
 function TryMove(dx, dy) {
 
     // check for overlap after move
-    if (activeBlocks
+    if (!activeBlocks
         .map(b => [b.x + dx, b.y + dy])
-        .find(p => get_grid(...p))
+        .every(p => inside_grid(...p) && !get_grid(...p))
     ) { return false }
 
     //no overlap, move
