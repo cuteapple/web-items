@@ -4,8 +4,6 @@ let width = 20
 let height = 50
 /** micro seconds to fall down one block */
 let fall_interval = 100
-/** only single move is valid inside one interval */
-let move_interval = 33
 
 /**
  * active (moving) blocks
@@ -46,7 +44,14 @@ function init() {
     //...
 
     //start game loop
+    controller.left = () => TryMove(-1, 0)
+    controller.up = () => TryRotate()
+    controller.right = () => TryMove(1, 0)
+    controller.down = () => Down()
 }
+
+function TryRotate() { console.warn('not impl') }
+function Down() { console.warn('not impl') }
 
 /**
  * try move activeBlocks by dx, dy
