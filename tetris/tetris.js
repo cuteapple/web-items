@@ -68,18 +68,27 @@ function MoveDownOrNewOrEnd() {
 
 function End() {
     clearInterval(fall_timer)
+    controller.detech_all()
 }
 
 function TryRotate() { console.warn('not impl') }
 
+let down = false;
 function Down() {
+    if (down) return
+    down = true;
     clearInterval(fall_timer)
     requestAnimationFrame(_Down)
 }
 
 function _Down() {
-    if (MoveDownOrNewOrEnd()) requestAnimationFrame(_Down)
-    else fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
+    if (MoveDownOrNewOrEnd()) {
+        requestAnimationFrame(_Down)
+        return
+    }
+
+    down = false;
+    fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
 }
 
 /**
