@@ -82,7 +82,7 @@ function End() {
 function TryRotate() {
     let [cx, cy] = activeBlocks_anchor.pos
     let deltas = activeBlocks.map(x => [x.x - cx, x.y - cy])
-    deltas = deltas.map(([dx, dy]) => [dy, - dx])
+    deltas = deltas.map(([dx, dy]) => [-dy, dx])
     let new_pos = deltas.map(([dx, dy]) => [cx + dx, cy + dy])
 
     if (!new_pos.every(p => inside_grid(...p) && !get_grid(...p)))
@@ -181,12 +181,14 @@ function GenerateBlocks(template, x, y, color) {
  * @enum {tetris_template}
  */
 const tetris_blocks = {
-    'L': [[0, 0], [0, 1], [0, 2], [1, 2]],
-    'T': [[0, 0], [1, 0], [2, 0], [1, 1]],
+    'L1': [[0, 0], [0, 1], [0, 2], [1, 0]],
+    'L2': [[0, 0], [0, 1], [0, 2], [-1, 0]],
+    'T': [[-1, 0], [0, 0], [1, 0], [0, 1]],
     'O': [[0, 0], [0, 1], [1, 0], [1, 1]],
-    'I': [[0, 0], [0, 1], [0, 2], [0, 3]],
+    'I': [[-1, 0], [0, 0], [1, 0], [2, 0]],
 }
 
 function RandomTetris() {
-    return tetris_blocks['LTOI'[Math.floor(Math.random() * 4)]]
+    let choice = Object.keys(tetris_blocks)
+    return tetris_blocks[choice[Math.floor(Math.random() * choice.length)]]
 }
