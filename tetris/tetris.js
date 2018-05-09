@@ -53,9 +53,9 @@ function init() {
 function TryMove(dx, dy) {
 
     // check for overlap after move
-    if (!activeBlocks
-        .map(b => [b.x, b.y])
-        .every(p => get_grid(...p))
+    if (activeBlocks
+        .map(b => [b.x + dx, b.y + dy])
+        .find(p => get_grid(...p))
     ) { return false }
 
     //no overlap, move
@@ -88,6 +88,10 @@ class GridItem {
     get pos() { return [this.x, this.y] }
 }
 
+function randomColorString() {
+    return `hsl(${Math.floor(Math.random()*360)}, 100%, 50%)`
+}
+
 /**
  * generate blocks onto *x* and *y*, regardless of existed blocks
  * @param {tetris_template} template
@@ -96,7 +100,9 @@ class GridItem {
  * @returns {GridItem[]}
  */
 function GenerateBlocks(template, x, y) {
-    return template.map(([dx, dy]) => new GridItem(x + dx, y + dy, playground))
+    let blocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, playground))
+    //blocks.forEach(b => b.element.style.backgroundColor = )
+    return blocks
 }
 
 /** @typedef {number[][]} tetris_template */
