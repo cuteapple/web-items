@@ -55,20 +55,32 @@ function init() {
 
 function MoveDownOrNewOrEnd() {
     let success = TryMove(0, 1)
-    if (!success) {
-        if (activeBlocks.find(x => x.y < 1)) {
-            End()
-            return
-        }
-        activeBlocks.forEach(x => set_grid(x.x, x.y, x))
-        activeBlocks = GenerateBlocks(RandomTetris(), Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
+    if (success) return true
+
+    if (activeBlocks.find(x => x.y < 1)) {
+        End()
+        return false
     }
+    activeBlocks.forEach(x => set_grid(x.x, x.y, x))
+    activeBlocks = GenerateBlocks(RandomTetris(), Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
+    return false
 }
 
-function End() { }
+function End() {
+    clearInterval(fall_timer)
+}
 
 function TryRotate() { console.warn('not impl') }
-function Down() { console.warn('not impl') }
+
+function Down() {
+    clearInterval(fall_timer)
+    requestAnimationFrame(_Down)
+}
+
+function _Down() {
+    if (MoveDownOrNewOrEnd()) requestAnimationFrame(_Down)
+    else fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
+}
 
 /**
  * try move activeBlocks by dx, dy
