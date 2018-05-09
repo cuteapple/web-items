@@ -40,14 +40,13 @@ function set_grid(x, y, block) {
 }
 
 function init() {
+
     playground = document.getElementById('playground')
+    apply_cssjs(playground, width, height)
 
     //set up grid
     playground.style.gridTemplateRows = `repeat(${height},1fr)`
     playground.style.gridTemplateColumns = `repeat(${width},1fr)`
-
-    //adjust width and height of playground
-    //...
 
     //start game loop
     controller.left = () => TryMove(-1, 0)
