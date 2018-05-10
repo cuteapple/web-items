@@ -32,3 +32,8 @@ something
 
 - game of life (WebGL) https://cuteapple.github.io/web-items/game%20of%20life/webgl
 <img src="game%20of%20life/webgl/cover.png" width="256">
+
+---
+
+- snake https://cuteapple.github.io/web-items/tetris/
+<img src="tetris/cover.png" width="256">
