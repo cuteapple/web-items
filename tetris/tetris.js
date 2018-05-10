@@ -1,7 +1,7 @@
 ﻿let playground
 let controller = new controller4()
-let width = 10
-let height = 20
+let width = 12
+let height = 30
 /** micro seconds to fall down one block */
 let fall_interval = 300
 let fall_timer
