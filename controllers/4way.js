@@ -13,9 +13,10 @@ class controller4 {
      * @param {(event_name:'up')=>void} up callback for up event
      * @param {(event_name:'down')=>void} down callback for down event
      * @param {(event_name:event_names)=>void} all callback for any previous events, with parameter event_name equal to the event name
+     * @param {'keydown'|'keyup'} type event type to listen, default 'keydown'
      */
-    constructor(left, right, up, down, all) {
-        document.addEventListener('keydown', (event)=>this.handlekey(event.key))
+    constructor(left, right, up, down, all, type = 'keydown') {
+        document.addEventListener('keydown', (event) => this.handlekey(event.key, true))
 
         let noop = this.noop = () => { /*console.log('no handler')*/ }
 
@@ -40,18 +41,21 @@ class controller4 {
     detach_all() {
         this.left = this.right = this.up = this.down = this.all = this.noop
     }
-    
-    handlekey(key) {
-        let handler;
-        switch (key) {
-            case "ArrowLeft": handler = 'left'; break;
-            case "ArrowRight": handler = 'right'; break;
-            case "ArrowUp": handler = 'up'; break;
-            case "ArrowDown": handler = 'down'; break;
-            default: return; // do nothing
-        }
+
+    keydown(key) {
+        let handler = this.parsekey(key)
         this[handler](handler)
         this.all(handler)
+    }
+
+    parsekey(key) {
+        switch (key) {
+            case "ArrowLeft": return 'left';
+            case "ArrowRight": return 'right';
+            case "ArrowUp": return 'up';
+            case "ArrowDown": return 'down';
+            default: return; // do nothing
+        }
     }
 
     static to2D(direction, [right, up] = [1, 1]) {
