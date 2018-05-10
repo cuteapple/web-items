@@ -1,7 +1,7 @@
 ﻿let playground
 let controller = new controller4()
-let width = 20
-let height = 50
+let width = 10
+let height = 20
 /** micro seconds to fall down one block */
 let fall_interval = 300
 let fall_timer
@@ -64,13 +64,42 @@ function MoveDownOrNewOrEnd() {
     let success = TryMove(0, 1)
     if (success) return true
 
+    activeBlocks.forEach(x => set_grid(x.x, x.y, x))
+    CheckRows()
+
     if (activeBlocks.find(x => x.y < 1)) {
         End()
         return false
     }
-    activeBlocks.forEach(x => set_grid(x.x, x.y, x))
     GenerateBlocks(RandomTetris(), Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
     return false
+}
+
+function CheckRows() {
+    let target_rows = [... new Set(activeBlocks.map(x => x.y))]
+    const columns = Array(width).fill().map((x, i) => i) //[1,2,...,width-1]
+    let remove_rows = target_rows.filter(y => columns.every(x => get_grid(x, y) instanceof GridItem))
+    let dy = Array(height).fill(0)
+    for (let y of remove_rows) {
+        //remove
+        for (let x of columns) {
+            get_grid(x, y).detech()
+            set_grid(x, y, undefined)
+        }
+        for (let i = 0; i < y; ++i) {
+            ++dy[i]
+        }
+    }
+
+    for (let y = height - 1; y >= 0; --y) {
+        for (let x of columns) {
+            let block = get_grid(x, y)
+            if (!block) continue
+            set_grid(x, y, undefined)
+            set_grid(x, y + dy[y], block)
+            block.y += dy[y]
+        }
+    }
 }
 
 function End() {
