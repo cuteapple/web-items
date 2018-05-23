@@ -35,5 +35,9 @@ something
 
 ---
 
-- snake https://cuteapple.github.io/web-items/tetris/
+- tetris https://cuteapple.github.io/web-items/tetris/
 <img src="tetris/cover.png" width="256">
+
+---
+
+**suggestion for topic is pretty welcome**
