@@ -10,6 +10,8 @@ something
 - **easy and clean code**
 - keep it simple
 
+- **suggestion for topic is pretty welcome**
+
 ---
 
 - ooxx https://cuteapple.github.io/web-items/ooxx/
