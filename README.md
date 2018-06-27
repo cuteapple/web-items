@@ -42,4 +42,4 @@ something
 
 ---
 
-**suggestion for topic is pretty welcome**
+[blog posts (Chinese/TW)](http://cuteappleplayintheweb.blogspot.com/search/label/%E8%A3%BD%E4%BD%9C%E4%B8%80%E4%BA%9B%E6%9D%B1%E8%A5%BF) contains some tutorial(?)
