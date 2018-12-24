@@ -1,5 +1,7 @@
 something build in 1 day
 
+also check out my [vue.js rewrite](https://github.com/cuteapple/web-items-vue) of this repo
+
 ---
 
 - **vanilla es6** (zero dependency)
