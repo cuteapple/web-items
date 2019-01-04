@@ -1,4 +1,4 @@
-also check out my [vue.js rewrite](https://github.com/cuteapple/web-items-vue) of this repo
+also check out my [vue.js rewrite](https://github.com/cuteapple/web-items-vue) of this repo (with some additional feature and algorithm change)
 
 ---
 
